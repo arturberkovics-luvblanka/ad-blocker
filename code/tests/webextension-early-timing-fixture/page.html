@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WKWebExtension early timing smoke</title>
+  <script>
+    globalThis.__timingParserSnapshot = {
+      manifestStartSeen: typeof globalThis.__timingManifestStart === "object",
+      googleAdStatus: typeof globalThis.google_ad_status === "undefined"
+        ? "undefined"
+        : globalThis.google_ad_status,
+      timestamp: performance.now(),
+    };
+  </script>
+</head>
+<body>
+  <main id="parser-content">Parser content survived delayed injection</main>
+</body>
+</html>

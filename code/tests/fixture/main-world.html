@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="hu"><head><script>
+// Deliberately the first parser-executed script in the document.
+window.__firstPageScriptSawMain = typeof window.__adBlockerMainProbe === "object";
+window.__firstPageScriptTime = performance.now();
+</script>
+<meta charset="utf-8"><title>Safari korai MAIN-world teszt</title>
+<style>body{font:18px/1.6 system-ui;max-width:800px;margin:60px auto;padding:24px;color-scheme:light dark}output{display:block;padding:20px;background:#8882}</style>
+</head><body>
+<h1>Futott-e a bővítmény az első oldalscript előtt?</h1>
+<output id="probe-result">Ellenőrzés…</output>
+<p>Ez a helyi teszt a Safari statikus MAIN-world scriptjének sorrendjét vizsgálja. Nem reklámblokkolási minősítés.</p>
+<a href="/main-world-csp.html">Külön CSP-próba</a>
+<script>
+document.getElementById("probe-result").textContent = window.__firstPageScriptSawMain
+  ? "SIKER: a MAIN-world bővítményscript megelőzte az első oldalscriptet."
+  : "NEM IGAZOLT: az első oldalscript nem látta a MAIN-world jelzőt.";
+document.documentElement.dataset.firstPageScriptSawMain = String(window.__firstPageScriptSawMain);
+</script></body></html>

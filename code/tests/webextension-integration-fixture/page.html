@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WKWebExtension integration smoke</title>
+</head>
+<body>
+  <main id="parser-content">Parser content survived</main>
+  <iframe id="child-frame" src="/child.html"></iframe>
+  <iframe id="blank-frame" name="useful-blank-frame" src="about:blank"></iframe>
+  <iframe id="srcdoc-frame" name="useful-srcdoc-frame"
+          srcdoc="<!doctype html><html><body><main id='parser-content'>Srcdoc parser content survived</main></body></html>"></iframe>
+  <script>globalThis.__fixtureInlineScriptRan = true;</script>
+</body>
+</html>

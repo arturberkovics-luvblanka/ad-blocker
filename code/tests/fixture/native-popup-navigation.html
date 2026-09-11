@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Native popup navigation fixture</title>
+<button id="useful" type="button">0</button>
+<a id="target-link" target="_blank" href="/native-popup-target.html">Target</a>
+<a id="exception-link" target="_blank" href="/native-popup-exception.html">Exception</a>
+<iframe id="document-frame" title="document target"></iframe>
+<script>
+  document.getElementById("useful").addEventListener("click", event => {
+    event.currentTarget.textContent = String(Number(event.currentTarget.textContent) + 1);
+  });
+</script>

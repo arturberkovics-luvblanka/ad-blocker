@@ -1,0 +1,62 @@
+{
+  "converter": {
+    "version": "4.3.0",
+    "revision": "7a2e93f0afa70479cc59985f332025236c3f0c39",
+    "localPatches": [
+      "native-popup-resource-type-with-document-fallback"
+    ],
+    "binarySHA256": "261c737bcf8392d6ebf427ae078f1cd29b7d2a9011a1ad502477170efad1bd59"
+  },
+  "inputs": {
+    "combinedSHA256": "98ca287c2031678aeff33cb386b416abcc5ceae3ae9109837a8541cd1dfe7161",
+    "sources": [
+      {
+        "name": "AdGuard Base filter",
+        "version": "2.4.89.22",
+        "updated": "2026-09-09T12:20:56+00:00",
+        "sha256": "f55c87d2a6c08149f306fe62a8a3f42b5edc0663c897a3ae25a8d7c6a794fb4e"
+      },
+      {
+        "name": "Hufilter for AdGuard",
+        "version": "202609081912",
+        "updated": "2026-09-08T19:12:00+00:00",
+        "revision": "1832f017a963e4b96183e7865670a5cdd91ce263",
+        "sourceRevision": "9a62d00504244bcbab1051e49acd5240997332a6",
+        "sha256": "211b63f31366a3e70bca1cb764356628eefa62be08a896ee4165f856c652df1b"
+      },
+      {
+        "name": "Ad Blocker local supplementary rules",
+        "sha256": "debbfc47347a2e97279a330f04a37619796562aa3a232f6157680110d03d48ff"
+      }
+    ]
+  },
+  "safariVersion": 26,
+  "conversion": {
+    "sourceRulesCount": 138527,
+    "sourceSafariCompatibleRulesCount": 128439,
+    "safariRulesCount": 97503,
+    "advancedRulesCount": 12076,
+    "discardedSafariRules": 0,
+    "errorsCount": 223,
+    "safariRulesJSONBytes": 13982865,
+    "advancedRulesTextBytes": 1455806
+  },
+  "projectSentinelRules": 2,
+  "finalSafariRules": 97505,
+  "outputs": {
+    "blockerListSHA256": "508b0900171a9eb4a0e6b4367d33d4566851a6cdeea16fdb46cac00c020961a8",
+    "ruleMultisetSHA256": "a6b592c6686ffd3d1e8c1f1147189b0fc3217c18b4e0c5921fa9a6077de34d79",
+    "advancedRulesSHA256": "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c",
+    "unsupportedRulesSHA256": "e2779ac23f63bb52bcc04360fd97726eedf420d17d38e916275490ec0ca1e754"
+  },
+  "verification": {
+    "jsonRuleCountCheck": "passed",
+    "errorLogCountCheck": "passed",
+    "webKitCompilation": {
+      "status": "passed",
+      "testedOutputSHA256": "508b0900171a9eb4a0e6b4367d33d4566851a6cdeea16fdb46cac00c020961a8",
+      "testedOn": "2026-09-10",
+      "macOS": "27.0 (26A5425a)"
+    }
+  }
+}

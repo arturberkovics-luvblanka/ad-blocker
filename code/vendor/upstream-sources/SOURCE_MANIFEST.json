@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "checkedDate": "2026-09-11",
+  "sources": [
+    {
+      "name": "Scriptlets",
+      "version": "2.4.2",
+      "tag": "v2.4.2",
+      "commit": "6a3052ab7b368281996c27a7abdcd653124123d8",
+      "repository": "https://github.com/AdguardTeam/Scriptlets",
+      "downloadURL": "https://codeload.github.com/AdguardTeam/Scriptlets/tar.gz/6a3052ab7b368281996c27a7abdcd653124123d8",
+      "file": "Scriptlets-2.4.2.tar.gz",
+      "sha256": "44c30263f75239d61be7ef4e08fe644d464b7a7b720b7b1ffd45e22e7bdefaea",
+      "archiveRoot": "Scriptlets-6a3052ab7b368281996c27a7abdcd653124123d8",
+      "license": "GPL-3.0",
+      "licenseFile": "LICENSE-Scriptlets.txt",
+      "licenseSHA256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b",
+      "packageJSONSHA256": "12006d8ea4964d50cb3533775c607b1bc911c474bc6e88042555a4eef5b09925",
+      "lockfile": "pnpm-lock.yaml",
+      "lockfileSHA256": "ed4245e1a549c74d7829e83e69b7691175902df960557bfc9ba4658bcffee8ad",
+      "packageManager": null,
+      "engines": {},
+      "upstreamBuildScripts": {
+        "build": "rimraf dist && tsx scripts/build.js",
+        "postbuild": "tsx scripts/check-corelibs-dist.js",
+        "wiki:build-table": "tsx ./scripts/check-sources-updates.js && tsx ./scripts/build-compatibility-table.js",
+        "wiki:build-docs": "tsx scripts/build-docs.js"
+      },
+      "verification": {
+        "packageVersionMatches": true,
+        "preferredSourceFilesPresent": true,
+        "upstreamBuildExecuted": false,
+        "npmDistByteIdentityVerified": false
+      }
+    },
+    {
+      "name": "ExtendedCss",
+      "version": "2.1.1",
+      "tag": "v2.1.1",
+      "commit": "c7f652239f8ba3b14a9920d9207e9924874e7f1d",
+      "repository": "https://github.com/AdguardTeam/ExtendedCss",
+      "downloadURL": "https://codeload.github.com/AdguardTeam/ExtendedCss/tar.gz/c7f652239f8ba3b14a9920d9207e9924874e7f1d",
+      "file": "ExtendedCss-2.1.1.tar.gz",
+      "sha256": "101ba869e955b82ed4a9ba8ac9f94c760ad58f54004e7f6bb3cafd74c2b71a9f",
+      "archiveRoot": "ExtendedCss-c7f652239f8ba3b14a9920d9207e9924874e7f1d",
+      "license": "GPL-3.0",
+      "licenseFile": "LICENSE-ExtendedCss.txt",
+      "licenseSHA256": "8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b",
+      "packageJSONSHA256": "697b5f3af4b061879b6098a32428126df2a54526b9f2d8d0e6cbf93afe0179ca",
+      "lockfile": "yarn.lock",
+      "lockfileSHA256": "b67e7a1b44ff7ceaa41dd3004b88d7ee70a2f322b777b32ce7d0464164579457",
+      "packageManager": null,
+      "engines": {
+        "node": ">=16"
+      },
+      "upstreamBuildScripts": {
+        "build": "ts-node tools/build",
+        "prebuild": "rimraf dist && yarn build:types",
+        "build:types": "tsc --declaration --emitDeclarationOnly --outdir dist/types"
+      },
+      "verification": {
+        "packageVersionMatches": true,
+        "preferredSourceFilesPresent": true,
+        "upstreamBuildExecuted": false,
+        "npmDistByteIdentityVerified": false
+      }
+    },
+    {
+      "name": "Public Suffix List",
+      "bundledVersion": "2025-07-09_15-23-09_UTC",
+      "commit": "c38a2f8e8862ad65d91af25dee90002c61329953",
+      "commitTimeUTC": "2025-07-09T15:22:59Z",
+      "repository": "https://github.com/publicsuffix/list",
+      "downloadURL": "https://raw.githubusercontent.com/publicsuffix/list/c38a2f8e8862ad65d91af25dee90002c61329953/public_suffix_list.dat",
+      "file": "public_suffix_list-2025-07-09.dat",
+      "sha256": "effcd21e71ff852f959f15172dc5e8b684ace0a853a8da647867bf5fdaf15200",
+      "license": "MPL-2.0",
+      "licenseFile": "LICENSE-PublicSuffixList.txt",
+      "licenseSHA256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "verification": {
+        "builder": "../swift-dependencies/swift-psl/Sources/ResourceBuilder/main.swift",
+        "swiftPSLVersion": "1.1.43",
+        "swiftPSLCommit": "7ccee9d576d4ca45219440e346f61117f44c816f",
+        "builderPackageUsesVendoredPunycodeSwift": true,
+        "outputs": {
+          "common.bin": {
+            "sha256": "846cfcb325b59596fe4daf1bb35791275d3cc80b7aff3166f51b3c620bf38717",
+            "bytes": 479419,
+            "byteForByteMatch": true
+          },
+          "negated.bin": {
+            "sha256": "7bbb0cd0f4bbbf48567726988596e29d740a9575827bb26be1e86c1d6e2298cc",
+            "bytes": 795,
+            "byteForByteMatch": true
+          },
+          "asterisk.bin": {
+            "sha256": "29828cce98558f779cc0d98c30012567453a484df8fc1da84bfef67c52816c02",
+            "bytes": 11899,
+            "byteForByteMatch": true
+          }
+        },
+        "note": "Committed upstream list regenerates all three bundled tries byte-for-byte; no claim that the historical HTTP response bytes were identical."
+      }
+    }
+  ]
+}

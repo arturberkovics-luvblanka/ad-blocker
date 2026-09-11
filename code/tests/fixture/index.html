@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad Blocker – Helyi ellenőrzés</title>
+  <style>
+    :root { color-scheme: light dark; font: 16px/1.6 system-ui, sans-serif; }
+    body { max-width: 760px; margin: 55px auto; padding: 0 24px; }
+    h1 { line-height: 1.2; } .muted { opacity: .7; }
+    li { margin: 10px 0; } button { font: inherit; padding: 8px 16px; cursor: pointer; }
+    #fixture-ad-box { background: #e8665140; border: 1px dashed #e86651; padding: 20px; }
+    #results { background: #8881; border: 1px solid #8884; border-radius: 12px; padding: 20px 20px 20px 42px; }
+    .pass { color: light-dark(#136b44, #73d5a8); } .fail { color: light-dark(#ad3428, #ff9b91); }
+  </style>
+</head>
+<body>
+  <p class="muted">AD BLOCKER · 0.0.1 · HELYI TESZT</p>
+  <h1>Tényleg működik a két réteg?</h1>
+  <p>Ez az oldal külön ellenőrzi a hálózati blokkolást, az elrejtést, a webes bővítményt és a hasznos tartalmat. A siker itt az alap működését mutatja; a YouTube-ot és a teljes webet nem minősíti.</p>
+  <ul id="results" aria-live="polite"><li>Ellenőrzés…</li></ul>
+  <div id="fixture-ad-box">Teszt-reklámdoboz. Bekapcsolt szűrőlista mellett nem látható.</div>
+  <h2>A hasznos tartalom maradjon használható</h2>
+  <p>Ennek a szövegnek mindig látszania kell.</p>
+  <button id="counter" type="button">Működő gomb: 0</button>
+  <button id="refresh" type="button">Eredmény frissítése</button>
+  <p class="muted">Ha a Web Extension hiányzik: engedélyezd ezen az oldalon, majd töltsd újra a lapot. Ha a natív teszt hibás: ellenőrizd a szűrőlista kapcsolóját és a Safari webhelyenkénti tartalomblokkoló-beállítását.</p>
+  <script src="/fixture-control.js"></script>
+  <script src="/fixture-ad.js"></script>
+  <script src="/checks.js"></script>
+</body>
+</html>

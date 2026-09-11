@@ -1,0 +1,26 @@
+[
+  {
+    "trigger": {
+      "url-filter": "^https?:\\/\\/35\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\/",
+      "load-type": ["third-party"],
+      "resource-type": ["document"]
+    },
+    "action": {"type": "block"}
+  },
+  {
+    "trigger": {
+      "url-filter": "^https?:\\/\\/104\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\/",
+      "load-type": ["third-party"],
+      "resource-type": ["document"]
+    },
+    "action": {"type": "block"}
+  },
+  {
+    "trigger": {
+      "url-filter": "^https?:\\/\\/146\\.59\\.211\\.[0-9][0-9]?[0-9]?.*",
+      "load-type": ["third-party"],
+      "resource-type": ["document"]
+    },
+    "action": {"type": "block"}
+  }
+]

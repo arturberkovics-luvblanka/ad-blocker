@@ -1,0 +1,7 @@
+:root { color-scheme: light dark; font: 14px/1.5 system-ui, sans-serif; }
+body { width: 280px; margin: 0; padding: 22px; background: light-dark(#f7f8f8, #252726); }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+h1 { margin: 0; font-size: 19px; font-weight: 650; letter-spacing: -.4px; }
+header span { font-size: 11px; color: light-dark(#6b706e, #b2b8b5); }
+#status { margin: 20px 0 0; padding: 15px; border-radius: 12px; background: light-dark(#fff, #303532); color: light-dark(#565d59, #cbd3ce); }
+#status[data-state="available"] { color: light-dark(#196f5f, #80cfb9); background: light-dark(#e9f3ef, #223c34); }

@@ -1,0 +1,212 @@
+import XCTest
+
+@testable import ContentBlockerConverter
+
+/// Performance tests.
+extension ContentBlockerConverterTests {
+    /// Single run of the rule converter so that it was easier to profile it.
+    func testPerformanceSingleRun() {
+        let thisSourceFile = URL(fileURLWithPath: #file)
+        let thisDirectory = thisSourceFile.deletingLastPathComponent()
+        let resourceURL = thisDirectory.appendingPathComponent("Resources/test-rules.txt")
+
+        let content = try! String(contentsOf: resourceURL, encoding: String.Encoding.utf8)
+        let rules = content.components(separatedBy: "\n")
+
+        // On MBP M1 Max 2021 32GB
+        // CPU profiler result:
+        //
+        // March 2025:
+        // 345.95 Mc  69.7%: ContentBlockerConverter.convertArray
+        //
+        // July 10, 2025:
+        // 353.84 Mc  69.5%: ContentBlockerConverter.convertArray
+        //
+        // July 17, 2025:
+        // 346.76 Mc  69.5%: ContentBlockerConverter.convertArray
+        //
+        // July 18, 2025 (added mixed permitted/restricted rules):
+        // 348.29 Mc  69.8%: ContentBlockerConverter.convertArray
+        //
+        // July 23, 2025 (changed regexes for || and ^)
+        // 331.79 Mc  69.4%: ContentBlockerConverter.convertArray
+        //
+        // On MBP M4 Max 2024 48GB
+        // CPU profiler result:
+        //
+        // Aug 8, 2025
+        // 302.14 Mc  68,4%: ContentBlockerConverter.convertArray
+        //
+        // On MBP M1 Pro 2021 16GB
+        // CPU profiler result:
+        //
+        // Mar 24, 2025
+        // 376.00 Mc  69.6%: ContentBlockerConverter.convertArray
+        //
+        // Mar 24, 2025 (split regexEndSeparator into regexEndString and regexSeparator)
+        // 368.00 Mc  70.8%: ContentBlockerConverter.convertArray
+        let conversionResult = ContentBlockerConverter().convertArray(
+            rules: rules,
+            safariVersion: SafariVersion.safari16_4,
+            advancedBlocking: true,
+        )
+
+        XCTAssertEqual(conversionResult.sourceRulesCount, 32660)
+        XCTAssertEqual(conversionResult.safariRulesCount, 20178)
+        XCTAssertEqual(conversionResult.sourceSafariCompatibleRulesCount, 28620)
+        XCTAssertEqual(conversionResult.advancedRulesCount, 7299)
+        XCTAssertEqual(conversionResult.errorsCount, 88)
+        XCTAssertEqual(conversionResult.discardedSafariRules, 0)
+    }
+
+    /// Benchmark test for convertArray performance.
+    ///
+    /// Baseline results (Aug 8, 2025):
+    /// - Machine: MacBook Pro M4 Max, 48GB RAM
+    /// - OS: macOS 26
+    /// - Swift: 6.2
+    /// - Average execution time: ~0.753 sec
+    ///
+    /// Baseline results (Dec 23, 2025):
+    /// - Machine: MacBook Pro M4 Max, 48GB RAM
+    /// - OS: macOS 26
+    /// - Swift: 6.2
+    /// - Average execution time: ~0.787 sec
+    ///
+    /// Baseline results (Dec 25, 2025):
+    /// - Machine: Apple M3, 16GB RAM
+    /// - OS: macOS 26.2
+    /// - Swift: 6.2.3
+    /// - Average execution time: ~0.924 sec
+    ///
+    /// Baseline results (March 2026):
+    /// - Machine: MacBook Pro M1 Pro, 16GB RAM
+    /// - OS: macOS 15.7
+    /// - Swift: 6.2
+    /// - Average execution time: ~1.169 seconds
+    ///
+    /// Baseline results (Mar 24, 2026):
+    /// - Machine: MacBook Pro M1 Pro, 16GB RAM
+    /// - OS: macOS 15.7
+    /// - Swift: 6.2
+    /// - Average execution time: ~1.178 seconds
+    ///
+    /// To get your machine info: `system_profiler SPHardwareDataType`
+    /// To get your macOS version: `sw_vers`
+    /// To get your Swift version: `swift --version`
+    func testPerformance() {
+        let thisSourceFile = URL(fileURLWithPath: #file)
+        let thisDirectory = thisSourceFile.deletingLastPathComponent()
+        let resourceURL = thisDirectory.appendingPathComponent("Resources/test-rules.txt")
+
+        let content = try! String(contentsOf: resourceURL, encoding: String.Encoding.utf8)
+        let rules = content.components(separatedBy: "\n")
+
+        self.measure {
+            let conversionResult = ContentBlockerConverter().convertArray(
+                rules: rules,
+                safariVersion: SafariVersion.safari16_4,
+                advancedBlocking: true
+            )
+
+            XCTAssertEqual(conversionResult.sourceRulesCount, 32660)
+            XCTAssertEqual(conversionResult.safariRulesCount, 20178)
+            XCTAssertEqual(conversionResult.sourceSafariCompatibleRulesCount, 28620)
+            XCTAssertEqual(conversionResult.advancedRulesCount, 7299)
+            XCTAssertEqual(conversionResult.errorsCount, 88)
+            XCTAssertEqual(conversionResult.discardedSafariRules, 0)
+        }
+    }
+
+    /// Benchmark test for handling $specifichide rules
+    ///
+    /// Baseline results (Aug 2025):
+    /// - Machine: MacBook Pro M4 Max,48GB RAM
+    /// - OS: macOS 26
+    /// - Swift: 6.2
+    /// - Average execution time: ~0.179 seconds
+    ///
+    /// Baseline results (Dec 23, 2025):
+    /// - Machine: MacBook Pro M4 Max,48GB RAM
+    /// - OS: macOS 26
+    /// - Swift: 6.2
+    /// - Average execution time: ~0.196 seconds
+    /// - No considerable changes since the prev baseline so the diff is due to env changes.
+    ///
+    /// Baseline results (Dec 25, 2025):
+    /// - Machine: Apple M3, 16GB RAM
+    /// - OS: macOS 26.2
+    /// - Swift: 6.2.3
+    /// - Average execution time: ~0.223 seconds
+    ///
+    /// Baseline results (March 2026):
+    /// - Machine: MacBook Pro M1 Pro, 16GB RAM
+    /// - OS: macOS 15.7
+    /// - Swift: 6.2
+    /// - Average execution time: ~0.265 seconds
+    ///
+    /// Baseline results (Mar 24, 2026):
+    /// - Machine: MacBook Pro M1 Pro, 16GB RAM
+    /// - OS: macOS 15.7
+    /// - Swift: 6.2
+    /// - Average execution time: ~0.263 seconds
+    ///
+    /// To get your machine info: `system_profiler SPHardwareDataType`
+    /// To get your macOS version: `sw_vers`
+    /// To get your Swift version: `swift --version`
+    func testSpecifichidePerformance() {
+        let rulePairsCount: Int = 1000
+        var rules = [String]()
+
+        for index in 1...rulePairsCount {
+            rules.append("test\(index).com,example\(index).org##.banner")
+            rules.append("@@||example\(index).org^$specifichide")
+        }
+
+        self.measure {
+            let conversionResult = ContentBlockerConverter().convertArray(rules: rules)
+
+            XCTAssertEqual(conversionResult.sourceRulesCount, rulePairsCount * 2)
+            XCTAssertEqual(conversionResult.safariRulesCount, rulePairsCount)
+            XCTAssertEqual(conversionResult.errorsCount, 0)
+            XCTAssertEqual(conversionResult.discardedSafariRules, 0)
+        }
+    }
+
+    /// This is a basic test that checks that our converter does not crash on popular third-party lists.
+    func testAttemptToConvertPopularLists() {
+        let lists = [
+            "https://easylist-downloads.adblockplus.org/abp-filters-anti-cv.txt",
+            "https://filters.adtidy.org/ios/filters/1.txt",
+            "https://filters.adtidy.org/ios/filters/2.txt",
+            "https://filters.adtidy.org/ios/filters/3.txt",
+            "https://filters.adtidy.org/ios/filters/4.txt",
+            "https://filters.adtidy.org/ios/filters/5.txt",
+            "https://filters.adtidy.org/ios/filters/10.txt",
+            "https://filters.adtidy.org/ios/filters/14.txt",
+            "https://easylist-downloads.adblockplus.org/easylist.txt",
+            "https://easylist-downloads.adblockplus.org/easyprivacy.txt",
+            "https://secure.fanboy.co.nz/fanboy-cookiemonster.txt",
+            "https://secure.fanboy.co.nz/fanboy-annoyance.txt",
+            "https://secure.fanboy.co.nz/fanboy-social.txt",
+            "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
+            "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters-2022.txt",
+            "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters-2021.txt",
+            "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters-2020.txt",
+        ]
+
+        for listUrl in lists {
+            let content = try! String(
+                contentsOf: URL(string: listUrl)!,
+                encoding: String.Encoding.utf8
+            )
+            let rules = content.components(separatedBy: "\n")
+
+            let conversionResult = ContentBlockerConverter().convertArray(rules: rules)
+            XCTAssertTrue(
+                conversionResult.safariRulesCount > 0,
+                "Conversion failed for URL: \(listUrl)"
+            )
+        }
+    }
+}

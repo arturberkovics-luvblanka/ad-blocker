@@ -1,0 +1,1 @@
+window.fixtureControlLoaded = true;

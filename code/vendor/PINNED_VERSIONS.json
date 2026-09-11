@@ -1,0 +1,29 @@
+{
+  "SafariConverterLib": {
+    "version": "4.3.0",
+    "revision": "7a2e93f0afa70479cc59985f332025236c3f0c39",
+    "localPatches": ["native-popup-resource-type-with-document-fallback"],
+    "source": "https://github.com/AdguardTeam/SafariConverterLib/tree/7a2e93f0afa70479cc59985f332025236c3f0c39",
+    "license": "GPL-3.0-only"
+  },
+  "PunycodeSwift": {
+    "version": "3.0.0",
+    "revision": "30a462bdb4398ea835a3585472229e0d74b36ba5",
+    "source": "https://github.com/gumob/PunycodeSwift/tree/30a462bdb4398ea835a3585472229e0d74b36ba5",
+    "license": "MIT"
+  },
+  "swift-argument-parser": {
+    "version": "1.5.0",
+    "revision": "41982a3656a71c768319979febd796c6fd111d5c",
+    "source": "https://github.com/apple/swift-argument-parser/tree/41982a3656a71c768319979febd796c6fd111d5c",
+    "license": "Apache-2.0"
+  },
+  "swift-psl": {
+    "version": "1.1.43",
+    "revision": "7ccee9d576d4ca45219440e346f61117f44c816f",
+    "source": "https://github.com/ameshkov/swift-psl/tree/7ccee9d576d4ca45219440e346f61117f44c816f",
+    "license": "MIT",
+    "embeddedPublicSuffixListVersion": "2025-07-09_15-23-09_UTC",
+    "embeddedDataLicense": "MPL-2.0"
+  }
+}

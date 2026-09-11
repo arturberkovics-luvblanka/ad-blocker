@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="hu"><head><meta charset="utf-8"><title>Safari statikus script CSP-próba</title>
+<style>body{font:18px/1.6 system-ui;max-width:800px;margin:60px auto;padding:24px;color-scheme:light dark}output{display:block;padding:20px;background:#8882}</style>
+</head><body>
+<h1>Statikus bővítményscript szigorú CSP mellett</h1>
+<output id="probe-result">A bővítményscript futása még nem igazolt.</output>
+<p>A szerver ezen az oldalon <code>Content-Security-Policy: script-src 'none'; style-src 'unsafe-inline'</code> fejlécet küld. Az oldal nem tartalmaz saját JavaScriptet.</p>
+<p>A fővilágot az időzítési teszt külön ellenőrzi; ez az oldal a CSP melletti futást vizsgálja ugyanazzal a manifest-bejegyzéssel.</p>
+<a href="/main-world.html">Időzítési próba</a>
+</body></html>

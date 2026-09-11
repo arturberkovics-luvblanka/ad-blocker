@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Ad Blocker – Oldalellenőrzés",
+  "description": "Az Ad Blocker első tesztverziójának oldalengedély- és scriptellenőrzése.",
+  "version": "0.0.1",
+  "permissions": ["activeTab", "nativeMessaging", "scripting", "webNavigation"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": {"service_worker": "background.js"},
+  "content_scripts": [{
+    "matches": ["*://www.youtube.com/watch*"],
+    "js": ["early-youtube.js"],
+    "run_at": "document_start",
+    "all_frames": false,
+    "world": "MAIN"
+  }, {
+    "matches": [
+      "http://127.0.0.1/main-world.html",
+      "http://127.0.0.1/main-world-csp.html"
+    ],
+    "js": ["main-world-probe.js"],
+    "run_at": "document_start",
+    "all_frames": false,
+    "world": "MAIN"
+  }, {
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["advanced-content-runtime.js", "content.js"],
+    "run_at": "document_start",
+    "all_frames": true,
+    "match_about_blank": true,
+    "match_origin_as_fallback": true
+  }],
+  "action": {"default_title": "Ad Blocker", "default_popup": "popup.html"}
+}

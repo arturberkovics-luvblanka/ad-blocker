@@ -1,0 +1,10 @@
+! Ad Blocker local supplementary rules
+! 24.hu: an advertorial row has the observed .pr-row container and article tag.
+24.hu##.pr-row:has(article.m-articleWidget__wrap .m-articleWidget__tag)
+! Preserve the supported script/XHR portion of the Base rule rejected for $object.
+||media.net^$script,xmlhttprequest,third-party
+! Exact Safari-compatible regex forms of two Base popup rules.
+! Requires the local converter popup resource-type correction.
+/^https?:\/\/35\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\//$popup,third-party
+/^https?:\/\/104\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\//$popup,third-party
+/^https?:\/\/146\.59\.211\.[0-9][0-9]?[0-9]?.*/$popup,third-party

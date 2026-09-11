@@ -1,0 +1,285 @@
+default_platform(:ios)
+
+#
+# Workaround for following error while executing `pod lib lint` and `pod trunk push`
+#
+# EXPANDED_CODE_SIGN_IDENTITY: unbound variable
+# Command PhaseScriptExecution failed with a nonzero exit code
+#
+# For more information is available at
+# https://github.com/CocoaPods/CocoaPods/issues/8000#issuecomment-434488071
+#
+ENV["EXPANDED_CODE_SIGN_IDENTITY"] = ""
+ENV["EXPANDED_CODE_SIGN_IDENTITY_NAME"] = ""
+ENV["EXPANDED_PROVISIONING_PROFILE"] = ""
+
+xcodeproj_file="Punycode.xcodeproj"
+podspec_file="Punycode.podspec"
+scheme = "Punycode"
+
+desc "Run all jobs"
+lane :run_all do
+    lint_swift
+    tests
+    build_spm
+    build_carthage
+    lint_cocoapods
+    gen_docs
+end
+
+##########################################
+# Lint
+##########################################
+
+desc "Lint codes with swift-format"
+lane :lint_swift do
+    # sh("swift-format", "format", "--in-place", "--ignore-unparsable-files", "--configuration", "../.swift-format", "--recursive", "../Sources", "../Tests")
+    sh("swift-format", "lint", "--ignore-unparsable-files", "--configuration", "../.swift-format", "--recursive", "../Sources", "../Tests")
+end
+
+##########################################
+# Versioning
+##########################################
+
+desc "Set version number"
+lane :set_version do
+    current_app_version = get_version_number_from_xcodeproj(xcodeproj: xcodeproj_file)
+    new_app_version = prompt(
+        text: "Please enter version number (Current: #{current_app_version}): ",
+        ci_input: current_app_version
+    )
+    regexp = Regexp.new("[0-9]+\.[0-9]+\.[0-9]+")
+    matched = regexp.match(new_app_version)
+    if matched then
+        # Set version number to project
+        increment_version_number_in_xcodeproj(version_number: new_app_version)
+        # Set version number to podspec
+        version_bump_podspec(path: podspec_file, version_number: new_app_version)
+        # Set version number to .jazzy.yml
+        if File.exist?("../.jazzy.yml")
+            sh("sed", "-i", "", "s/version: [0-9]*\\.[0-9]*\\.[0-9]*/version: #{new_app_version}/g", "../.jazzy.yml")
+            sh("sed", "-i", "", "s|root_url: https://github.com/gumob/PunycodeSwift/tree/[0-9]*\\.[0-9]*\\.[0-9]*/docs/|root_url: https://github.com/gumob/PunycodeSwift/tree/#{new_app_version}/docs/|g", "../.jazzy.yml")
+        else
+            UI.error("No such file or directory: .jazzy.yml")
+        end
+        UI.message("Changed version from #{current_app_version} to #{new_app_version} ")
+    else
+        UI.error("Invalid version number. #{new_app_version}")
+    end
+end
+
+desc "Bump version number"
+lane :bump_version do
+    bump_type = UI.select("Select version position to be upgraded: ", ["patch", "minor", "major"])
+    current_app_version = get_version_number_from_xcodeproj(xcodeproj: xcodeproj_file)
+    current_app_versions = current_app_version.split(".")
+    current_app_version_patch = current_app_versions[2].to_i
+    current_app_version_minor = current_app_versions[1].to_i
+    current_app_version_major = current_app_versions[0].to_i
+    UI.message(current_app_versions)
+    if bump_type == "patch" then
+        current_app_version_patch += 1
+    elsif bump_type == "minor" then
+        current_app_version_patch = 0
+        current_app_version_minor += 1
+    elsif bump_type == "major" then
+        current_app_version_patch = 0
+        current_app_version_minor = 0
+        current_app_version_major += 1
+    end
+    new_app_version = [current_app_version_major, current_app_version_minor, current_app_version_patch].join(".")
+    # Set version number to project
+    increment_version_number_in_xcodeproj(version_number: new_app_version)
+    # Set version number to podspec
+    version_bump_podspec(path: podspec_file, version_number: new_app_version)
+    # Set version number to .jazzy.yml
+    if File.exist?("../.jazzy.yml")
+        sh("sed", "-i", "", "s/version: [0-9]*\\.[0-9]*\\.[0-9]*/version: #{new_app_version}/g", "../.jazzy.yml")
+        sh("sed", "-i", "", "s|root_url: https://github.com/gumob/PunycodeSwift/tree/[0-9]*\\.[0-9]*\\.[0-9]*/docs/|root_url: https://github.com/gumob/PunycodeSwift/tree/#{new_app_version}/docs/|g", "../.jazzy.yml")
+    else
+        UI.error("No such file or directory: .jazzy.yml")
+    end
+    UI.message("Changed version from #{current_app_version} to #{new_app_version} ")
+end
+
+##########################################
+# Test
+##########################################
+
+desc "Run all tests"
+lane :tests do
+    xcclean
+
+    desc "Run macOS Tests"
+    run_tests(
+        destination: "platform=macOS",
+        scheme: scheme,
+        force_quit_simulator: true,
+        reset_simulator: true,
+        prelaunch_simulator: false,
+        code_coverage: true,
+        open_report: false,
+        output_files: "report-macos.html,report-macos.junit"
+    )
+    slather(
+        scheme: scheme,
+        proj: xcodeproj_file,
+        output_directory: "./fastlane/reports/macOS",
+        html: true,
+        show: false
+    )
+
+    desc "Run iOS Tests"
+    run_tests(
+        destination: "platform=iOS Simulator,name=iPhone 15 Pro",
+        scheme: scheme,
+        force_quit_simulator: true,
+        reset_simulator: true,
+        prelaunch_simulator: false,
+        code_coverage: true,
+        open_report: false,
+        output_files: "report-ios.html,report-ios.junit"
+    )
+    slather(
+        scheme: scheme,
+        proj: xcodeproj_file,
+        output_directory: "./fastlane/reports/iOS",
+        html: true,
+        show: false
+    )
+
+    desc "Run tvOS Tests"
+    run_tests(
+        destination: "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)",
+        scheme: scheme,
+        force_quit_simulator: true,
+        reset_simulator: true,
+        prelaunch_simulator: false,
+        code_coverage: true,
+        open_report: false,
+        output_files: "report-tvos.html,report-tvos.junit"
+    )
+    slather(
+        scheme: scheme,
+        proj: xcodeproj_file,
+        output_directory: "./fastlane/reports/tvOS",
+        html: true,
+        show: false
+    )
+
+    desc "Run watchOS Tests"
+    run_tests(
+        destination: "platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)",
+        scheme: scheme,
+        force_quit_simulator: true,
+        reset_simulator: true,
+        prelaunch_simulator: false,
+        code_coverage: true,
+        open_report: false,
+        output_files: "report-watchos.html,report-watchos.junit"
+    )
+    slather(
+        scheme: scheme,
+        proj: xcodeproj_file,
+        output_directory: "./fastlane/reports/watchOS",
+        html: true,
+        show: false
+    )
+
+    desc "Run visionOS Tests"
+    run_tests(
+        destination: "platform=visionOS Simulator,name=Apple Vision Pro",
+        scheme: scheme,
+        force_quit_simulator: true,
+        reset_simulator: true,
+        prelaunch_simulator: false,
+        code_coverage: true,
+        open_report: false,
+        output_files: "report-visionos.html,report-visionos.junit"
+    )
+    slather(
+        scheme: scheme,
+        proj: xcodeproj_file,
+        output_directory: "./fastlane/reports/visionOS",
+        html: true,
+        show: false
+    )
+
+end
+
+##########################################
+# Package Manager
+##########################################
+
+desc "Lint Swift Package Manager"
+lane :build_spm do |options|
+    spm(
+        command: "build",
+        parallel: true
+    )
+    spm(
+        command: "test",
+        parallel: true
+    )
+end
+
+desc "Build Carthage"
+lane :build_carthage do |options|
+    carthage(
+        command: "build",
+        verbose: false,
+        platform: "Mac",
+        # use_xcframeworks: true,
+        no_skip_current: true
+    )
+    carthage(
+        command: "build",
+        verbose: false,
+        platform: "iOS",
+        use_xcframeworks: true,
+        no_skip_current: true
+    )
+    carthage(
+        command: "build",
+        verbose: false,
+        platform: "tvOS",
+        use_xcframeworks: true,
+        no_skip_current: true
+    )
+    carthage(
+        command: "build",
+        verbose: false,
+        platform: "watchOS",
+        use_xcframeworks: true,
+        no_skip_current: true
+    )
+    # carthage(
+    #     command: "build",
+    #     verbose: false,
+    #     platform: "visionOS",
+    #     use_xcframeworks: true,
+    #     no_skip_current: true
+    # )
+end
+
+desc "Lint Cocoapods"
+lane :lint_cocoapods do |options|
+    pod_lib_lint(verbose: true)
+end
+
+desc "Push Cocoapods"
+lane :push_cocoapods do |options|
+    pod_lib_lint(verbose: true)
+    pod_push(path: podspec_file)
+end
+
+##########################################
+# Swift Docs
+##########################################
+
+desc "Generate Swift Docs"
+lane :gen_docs do
+    jazzy(
+        config: ".jazzy.yml"
+    )
+end

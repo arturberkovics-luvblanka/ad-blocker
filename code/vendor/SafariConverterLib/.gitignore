@@ -1,0 +1,19 @@
+.DS_Store
+
+# VSCode/Windsurf
+.vscode
+
+# Swift
+/.swiftpm
+/.build
+/Packages
+/*.xcodeproj
+xcuserdata/
+/.idea
+
+# Ignore smart IDEs
+.windsurfrules
+.cursorrules
+
+# do not expose npmjs token
+.npmrc
