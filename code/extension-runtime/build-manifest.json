@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
   "generation": "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c",
-  "runtimeRevision": "cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e",
+  "runtimeRevision": "ec3c38a24d5002f26c045e63f341e82a9eb7ff844912517cdf947e9e81e8ed25",
   "inputs": {
     "generator": "6f41624ae27697f00dcb1e618644145760761a53871b2b4f987024125b00b0ce",
     "contentEntry": "d10747f6c870e0ea55fd743fc3f6763ace2f5aaf90a463f9df64fe6c8a8c5cb3",
-    "frontendSource": "d7814874a2204d429eb2f580b24866bfe66f0edf6cec2c7e7d2944ffdb300034",
+    "frontendSource": "754f3db653bbadc3bbc155b350c9c36d1d99cd9a51f169f5659d9f9362d8c0c5",
     "documentBackground": "ee7b1bc2d47cd9cacbd6a9569a82a18b999b3c947385056b19dff068ed64cf04",
     "earlyYoutubePolicy": "18228956443ad12a710b8541345d713c781a869520e993d82fdeb1723f714a9d",
     "upstreamSource": "d9ce395d9a22607e67400a39dd871307721adadcfe16ff9792481ce8b8c35a5a",
@@ -15,8 +15,8 @@
     "advancedRules": "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c"
   },
   "outputs": {
-    "advanced-content-runtime.js": "f218c5f0c352cc63ece00e5a726ffe428c0a7d0c27e681787bcb9c45f8121b85",
-    "advanced-background-runtime.js": "bda6703465e0125efef8975bbc3ec35e7b2b20f02c4121730551ec7a8dd19e90",
-    "early-youtube.js": "b95fc115f39d3ce2f2b7690a38445d7a3c61dd34ce34d17d11a495842a7167fa"
+    "advanced-content-runtime.js": "1bbed1a8b39a96d992ff060b22c2a788168b3615e81d01355c57842c2067a4b9",
+    "advanced-background-runtime.js": "bec6db127a5068c708087c041db30f277d965456540a080bbe19fee011af15ba",
+    "early-youtube.js": "92c22f95ffbaaae43acb770df8b56a0b81ddb26b99fb0750fb5a9f24b3a6e71e"
   }
 }

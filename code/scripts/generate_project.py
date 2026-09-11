@@ -83,7 +83,7 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
                 "App": "Ad Blocker", "ContentBlocker": "Ad Blocker – Szűrőlista",
                 "WebExtension": "Ad Blocker – Oldalellenőrzés"}[kind],
             "CFBundlePackageType": "APPL" if kind == "App" else "XPC!",
-            "CFBundleShortVersionString": VERSION, "CFBundleVersion": "3",
+            "CFBundleShortVersionString": VERSION, "CFBundleVersion": "4",
         }
         if kind != "App":
             info["NSExtension"] = {

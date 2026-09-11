@@ -14,8 +14,8 @@
     "world": "MAIN"
   }, {
     "matches": [
-      "http://127.0.0.2/main-world.html",
-      "http://127.0.0.2/main-world-csp.html"
+      "http://127.0.0.1/main-world.html",
+      "http://127.0.0.1/main-world-csp.html"
     ],
     "js": ["main-world-probe.js"],
     "run_at": "document_start",

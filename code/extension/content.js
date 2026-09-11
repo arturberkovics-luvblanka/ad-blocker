@@ -73,7 +73,7 @@ async function startAdvancedRules() {
 }
 
 function isFixturePage() {
-  return location.origin === "http://127.0.0.2:8765" && location.pathname === "/";
+  return location.origin === "http://127.0.0.1:8765" && location.pathname === "/";
 }
 
 function publishFixtureState() {

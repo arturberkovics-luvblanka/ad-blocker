@@ -27,6 +27,15 @@ const youtubeNativeJs = JSON.parse(readFileSync(
   "utf8",
 ));
 
+
+function boundOrigin(serverPath) {
+  const source = readFileSync(new URL(serverPath, import.meta.url), "utf8");
+  const bind = source.match(/ThreadingHTTPServer\(\("([^"]+)",\s*(\d+)\)/);
+  assert.ok(bind, `Cannot read the actual fixture bind address: ${serverPath}`);
+  return new URL(`http://${bind[1]}:${bind[2]}`);
+}
+const fixtureOrigin = boundOrigin("../scripts/serve_fixture.py");
+
 const emptyPayload = {
   css: [], extendedCss: [], js: [], scriptlets: [], engineTimestamp: 17,
 };
@@ -254,8 +263,8 @@ test("manifest loads the runtime before content code and declares native executi
   assert.equal(manifest.background.service_worker, "background.js");
   assert.deepEqual(manifest.content_scripts.find(entry => entry.js.includes("main-world-probe.js")), {
     matches: [
-      "http://127.0.0.2/main-world.html",
-      "http://127.0.0.2/main-world-csp.html",
+      "http://127.0.0.1/main-world.html",
+      "http://127.0.0.1/main-world-csp.html",
     ],
     js: ["main-world-probe.js"],
     run_at: "document_start",
@@ -287,7 +296,7 @@ test("MAIN-world probe is exact-origin guarded and idempotent", () => {
   };
   const context = {
     document,
-    location: { origin: "http://127.0.0.2:8765", pathname: "/main-world.html" },
+    location: { origin: fixtureOrigin.origin, pathname: "/main-world.html" },
     performance: { now: () => 42 },
   };
   context.window = context;
@@ -306,7 +315,7 @@ test("MAIN-world probe is exact-origin guarded and idempotent", () => {
       documentElement: { dataset: {} },
       addEventListener: () => { throw new Error("must not register"); },
     },
-    location: { origin: "http://127.0.0.2:9999", pathname: "/main-world.html" },
+    location: { origin: "http://127.0.0.1:9999", pathname: "/main-world.html" },
     performance: { now: () => 0 },
   };
   rejected.window = rejected;
@@ -388,7 +397,7 @@ test("content status identifies a response outside the early event-delay window"
 });
 
 test("fixture publishes advanced diagnostics and stays restricted to the exact local origin", async () => {
-  const page = runContent({ origin: "http://127.0.0.2:8765", href: "http://127.0.0.2:8765/", root: null });
+  const page = runContent({ origin: fixtureOrigin.origin, href: fixtureOrigin.href, root: null });
   page.document.documentElement = { dataset: {} };
   page.ready();
   await settle();
@@ -397,7 +406,7 @@ test("fixture publishes advanced diagnostics and stays restricted to the exact l
   assert.equal(page.document.documentElement.dataset.adBlockerAdvancedError, "");
   assert.equal(page.document.documentElement.dataset.adBlockerAdvancedLimitations, "");
   assert.match(page.document.documentElement.dataset.adBlockerLookupMilliseconds, /^\d+$/);
-  assert.deepEqual(runContent({ origin: "http://127.0.0.2:8766" }).document.documentElement.dataset, {});
+  assert.deepEqual(runContent({ origin: "http://127.0.0.1:8766" }).document.documentElement.dataset, {});
 });
 
 test("background ignores message URL and derives lookup URLs from sender", async () => {
@@ -829,5 +838,24 @@ test("popup never accepts a missing current-generation response", async () => {
     }, [{ id: 3 }], metadata);
     assert.equal(status.dataset.state, "unavailable");
     assert.match(status.textContent, /nem érhető el/);
+  }
+});
+
+
+test("fixture server addresses agree with native rules and extension manifests", () => {
+  const rules = JSON.parse(readFileSync(new URL("../filters/blockerList.json", import.meta.url), "utf8"));
+  const sentinel = rules.find(rule => rule.trigger["url-filter"].includes("fixture-ad"));
+  assert.ok(sentinel && new RegExp(sentinel.trigger["url-filter"]).test(`${fixtureOrigin.origin}/fixture-ad.js`));
+  const cosmetic = rules.find(rule => rule.action.selector === "#fixture-ad-box");
+  assert.deepEqual(cosmetic.trigger["if-domain"], [fixtureOrigin.hostname]);
+  const probe = manifest.content_scripts.find(entry => entry.js.includes("main-world-probe.js"));
+  assert.deepEqual(probe.matches.map(pattern => new URL(pattern).hostname),
+    probe.matches.map(() => fixtureOrigin.hostname));
+  for (const fixture of ["webextension-integration-fixture", "webextension-early-timing-fixture"]) {
+    const origin = boundOrigin(`./${fixture}/server.py`);
+    const data = JSON.parse(readFileSync(new URL(`./${fixture}/extension/manifest.json`, import.meta.url), "utf8"));
+    for (const pattern of [...data.host_permissions, ...data.content_scripts.flatMap(entry => entry.matches)]) {
+      assert.equal(new URL(pattern).hostname, origin.hostname, `${fixture}: ${pattern}`);
+    }
   }
 });

@@ -35,3 +35,25 @@ function renderResults() {
 }
 document.getElementById("refresh").addEventListener("click", renderResults);
 window.addEventListener("load", renderResults);
+
+// Optional localhost-only reporting for native-browser runs where the remote
+// accessibility snapshot cannot expose the page. Only fixture state is sent.
+const report = new URL(location.href).searchParams.get("report");
+if (report && location.origin === "http://127.0.0.1:8765") {
+  window.addEventListener("load", () => {
+    for (const delay of [0, 1500, 5000]) {
+      setTimeout(() => {
+        const fields = new URLSearchParams({
+          report: report.slice(0, 64),
+          ...window.testResults(),
+          runtimeRevision: document.documentElement.dataset.adBlockerRuntimeRevision ?? "",
+          visibility: document.visibilityState,
+          bodyDisplay: getComputedStyle(document.body).display,
+        });
+        // This existing static resource returns 200; the local server log
+        // records the query without needing a second service or a new port.
+        fetch(`/fixture-control.js?${fields}`, { cache: "no-store" }).catch(() => {});
+      }, delay);
+    }
+  });
+}
