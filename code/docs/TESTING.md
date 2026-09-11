@@ -31,9 +31,18 @@ első oldalscript előtt és szigorú CSP alatt is lefutott. Az izolált WebKit
 integrációs és időzítési próbák szintén sikeresek, a korábban dokumentált
 blank/srcdoc programozott injektálási korlát megmaradt.
 
-A natív szűrőlista bekapcsolását Safari az automatizált kattintás miatt
-elutasította. A teljes ON/ON beállítás és annak pozitív végpontpróbája még
-nincs igazolva. A működő webes réteg önmagában nem bizonyít natív blokkolást.
+A Safari az automatizált natív bekapcsolást elutasította; a felhasználó
+kézzel engedélyezte. Ezután a telepített build 4 mindkét rétege ON állapotot
+adott, a háttér-host nulla saját ablakkal sikeres állapotot rögzített és kilépett.
+A helyi Safari-oldal mind a négy ellenőrzése sikeres volt: hasznos script,
+natív hálózati blokkolás, natív reklámdoboz-elrejtés, webes content script.
+A natív csomagolt SHA megegyezett a visszaigazolt generációval.
+
+A következő gombkattintást a Computer Use az aktuális böngésző-URL korlátozása
+miatt leállította; ezt nem próbáltuk más eszközzel megkerülni. A hasznos gomb
+korábbi web-only próbája sikeres volt; új ON/ON gombkattintást nem állítunk.
+Ez ezen a Macen elvégzett fejlesztői telepítési próba, nem más gépekre vagy
+notarizált, felügyelet nélküli telepítésre vonatkozó igazolás.
 
 ## Korábbi ellenőrzések a változatlan blokkolómotoron
 
@@ -80,11 +89,12 @@ vagy csak a reklám hiánya nem bizonyítja önmagában ennek az appnak a hatás
 
 - A v0.0.2 build 2 valódi `.pkg` telepítése és postinstall háttérindítása
   sikeres; a telepített app mindkét extensionje és erőforrásai ellenőrizve.
-  A késleltetett felismerés javítását a build 3 külön ellenőrzi.
+  A késleltetett felismerést a későbbi build 3 javította; a végső helyi
+  Safari-próba a build 4-gyel sikeres.
 - A v0.0.2 élő negatív próbája sikeres: Safari unsigned OFF mellett a
   háttér-host nulla saját ablakkal futott, SFErrorDomain 1 hibát rögzített,
   és nem állított sikeres aktiválást. Dupla indítás után is kilépett.
-  A pozitív, telepítés utáni végponttól végpontig tartó próba még hiányzik.
+  A pozitív, telepítés utáni helyi próba később a build 4-gyel sikeres lett.
   A csomag nem Developer ID-aláírt és nem notarizált.
 - A v0.0.2 még nem GitHub-kiadás; a nyilvános letöltési link továbbra is a
   v0.0.1-re mutat.

@@ -8,8 +8,7 @@ A **v0.0.1** az első nyilvános tesztkiadás, Apple Silicon Macre.
 > Ez a fejlesztői ág a még nem publikált v0.0.2 forrását tartalmazza. Ebben a
 > macOS host saját ablak nélkül végzi az első Safari-beállítást, a telepítő
 > pedig best-effort módon elindítja az aktív felhasználó környezetében. A
-> v0.0.2 valódi telepítése és háttérindítása ellenőrzött; a pozitív Safari-próba
-> még hátra van; a fenti letöltés ezért továbbra is a v0.0.1 kiadás.
+> v0.0.2 helyi telepítése, háttérindítása és pozitív Safari-próbája ellenőrzött; a fenti letöltés ezért továbbra is a v0.0.1 kiadás.
 
 ## Mit tartalmaz?
 

@@ -3,7 +3,7 @@
 A GitHubon jelenleg közzétett macOS csomag a v0.0.1. A fejlesztői ág v0.0.2
 forrásában már elkészült az ablak nélküli háttérbeállítás, de ez a verzió még
 nincs kiadva. A valódi `.pkg` telepítés és automatikus háttérindítás már
-sikeres; a pozitív Safari-beállítás ellenőrzése még hátra van.
+sikeres; a pozitív Safari-beállítás kézi rendszerengedélyek után igazolt.
 
 A kiadott macOS csomag részletes leírása: [INSTALLER.md](INSTALLER.md).
 

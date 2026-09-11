@@ -32,7 +32,7 @@ mutató forrásútvonal. Developer ID hiányában a macOS app ad-hoc aláírás�
 A v0.0.2 Release build, a package strukturális ellenőrzése és a postinstall
 4/4 unit tesztje sikeres. A build 2 valódi `.pkg` telepítése és a postinstall
 felhasználói háttérindítása sikeres. A build 3 a késleltetett Safari-felismerést
-javítja; a pozitív Safari-beállítás még külön kiadási kapu.
+javítja; a build 4 pozitív helyi Safari-próbája kézi engedélyek után sikeres.
 
 ## Natív konverter
 

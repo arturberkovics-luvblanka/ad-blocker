@@ -46,7 +46,7 @@ A parancsokat a projekt gyökeréből futtasd. Az iOS parancs aláírás nélkü
 fordítási ellenőrzés, nem telepíthető IPA. A Mac parancs helyi aláírással
 készít tesztappot. A v0.0.2 Release build, a package szerkezeti ellenőrzése és
 a postinstall 4/4 unit tesztje sikeres; valódi `.pkg`
-telepítési/hitelesítési próba még nem történt. Naplók: `../builds/logs/`.
+telepítési/hitelesítési próba és a build 4 pozitív helyi Safari-próbája sikeres. Naplók: `../builds/logs/`.
 Az Xcode köztes fájljai a rendszer ideiglenes mappájába kerülnek: az iCloud
 Desktop által hozzáadott Finder-metaadatok különben megakaszthatják a
 codesigningot.

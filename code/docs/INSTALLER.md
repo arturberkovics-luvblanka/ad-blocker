@@ -75,8 +75,8 @@ folyamat még nem készült el.
 
 ## Telepítés és Safari
 
-A v0.0.2 még nincs GitHub-kiadásként közzétéve. A kiadási artifact elkészülte
-után a lépések:
+A v0.0.2 helyi teszttelepítő elkészült; GitHub-kiadásként még nincs
+közzétéve. A telepítés lépései:
 
 1. Nyisd meg az `AdBlocker-0.0.2-macOS-arm64.pkg` fájlt, és telepítsd az
    alkalmazást az `/Applications` mappába.
@@ -110,4 +110,4 @@ webhelyengedélyt.
 A Release build, a csomag szerkezeti ellenőrzése és a postinstall 4/4 unit
 tesztje sikeres. Az élő unsigned-OFF próba nulla saját ablakkal és őszinte
 hibaállapottal lezárult. A valódi `.pkg` telepítés és a felhasználói háttérindítás sikeres;
-a pozitív, telepítés utáni Safari-próba még hátra van.
+a build 4 pozitív helyi Safari-próbája kézi engedélyek után sikeres.

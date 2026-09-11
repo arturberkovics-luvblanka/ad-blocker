@@ -100,7 +100,7 @@ nem jelent automatikus extension-engedélyezést. Fast User Switching esetén
 csak a `/dev/console` aktuális felhasználója célozható. Az Installer
 postinstall unit tesztjei 4/4 sikeresek, de a valódi `.pkg` telepítési és
 hitelesítési próba és a postinstall felhasználói háttérindítása sikeres;
-a pozitív Safari-beállítás még hátra van.
+a pozitív helyi Safari-beállítás kézi engedélyek után igazolt.
 
 Az `SMAppService` ehhez az egyszeri művelethez tartós és aránytalan
 megoldás lenne: kódaláírást és felhasználói jóváhagyást igényel, a user
@@ -155,11 +155,9 @@ Felhasználói feladat marad:
 A v0.0.2 host és postinstall elkészült, a Release build és a helyi strukturális
 csomagtesztek sikeresek. Még szükséges:
 
-- a késleltetett Safari-felismerés és a pozitív engedélyezési út ellenőrzése;
-- az aláíratlan Safari-bővítmény ismert blokkolási útjának élő ellenőrzése;
 - a felhasználó saját Team ID-jával Developer ID build és Installer-aláírás;
 - notarizálás, staple-ellenőrzés és tiszta profilú telepítési próba;
-- csak ezek után a hash-ellenőrzött v0.0.2 artifact publikálása.
+- ezek után a hash-ellenőrzött, Developer ID-aláírt nyilvános kiadás publikálása.
 
 Jelszót, Apple Account tokent vagy notarizációs titkot nem szabad forrásba,
 parancssori argumentumba vagy naplóba írni. A későbbi automatizálás
