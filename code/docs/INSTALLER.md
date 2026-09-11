@@ -25,6 +25,8 @@ Második argumentummal külön kimeneti mappa adható meg. A script:
 - staging payload root alatt pontosan az `Applications/Ad Blocker.app`
   útvonalat készíti elő;
 - a natív `pkgbuild --root` és `--component-plist` útvonalat használja;
+- a staging másolatból kihagyja a Finder/resource-fork extended metadata
+  adatait, és elutasítja az AppleDouble vagy `.DS_Store` payloadot;
 - minden felismert bundle-nél kikapcsolja a relocation- és verzióellenőrzést,
   bekapcsolja a szigorú bundle identifier ellenőrzést, és teljes bundle-cserét
   kér;

@@ -73,7 +73,7 @@ STAGED_APP="$PAYLOAD_ROOT/Applications/$(basename "$APP_PATH")"
 COMPONENT_PLIST="$SCRATCH/components.plist"
 
 mkdir -p "$PAYLOAD_ROOT/Applications"
-ditto "$APP_PATH" "$STAGED_APP"
+ditto --norsrc --noextattr "$APP_PATH" "$STAGED_APP"
 codesign --verify --deep --strict "$STAGED_APP"
 verify_bundle_architectures "$STAGED_APP"
 /usr/bin/diff -qr "$APP_PATH" "$STAGED_APP" >/dev/null || \
@@ -132,6 +132,8 @@ pkgutil --expand-full "$STAGED_PACKAGE" "$EXPANDED"
 
 [[ -z "$(find "$EXPANDED" -type d -name Payload -prune -o -type d -name Scripts -print -quit)" ]] || \
   fail "A csomag váratlan installer scriptet tartalmaz."
+[[ -z "$(find "$EXPANDED/Payload" \( -name '._*' -o -name '.DS_Store' \) -print -quit)" ]] || \
+  fail "A payload váratlan Finder/AppleDouble metadatafájlt tartalmaz."
 
 PACKAGE_INFO="$(find "$EXPANDED" -type f -name PackageInfo -print -quit)"
 [[ -n "$PACKAGE_INFO" ]] || fail "A kibontott csomag PackageInfo fájlja hiányzik."
