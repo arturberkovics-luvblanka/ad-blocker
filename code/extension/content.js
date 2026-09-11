@@ -6,7 +6,7 @@ if (globalThis[CONTENT_RUNTIME_GUARD]?.initialized === true
     || typeof globalThis.adguard?.contentScript?.applyConfiguration === "function") {
   return;
 }
-globalThis[CONTENT_RUNTIME_GUARD] = { initialized: true, version: "0.0.1" };
+globalThis[CONTENT_RUNTIME_GUARD] = { initialized: true, version: "0.0.2" };
 
 const ADVANCED_GENERATION = "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c";
 // Capture this document's runtime before a later extension update can replace it.
@@ -17,7 +17,7 @@ let advancedState = { phase: "starting" };
 browser.runtime.onMessage.addListener(message => {
   if (message?.type === "adblocker:status") {
     return Promise.resolve({
-      version: "0.0.1", generation: ADVANCED_GENERATION,
+      version: "0.0.2", generation: ADVANCED_GENERATION,
       runtimeRevision: RUNTIME_REVISION,
       scriptAvailable: true, advanced: advancedState,
     });
@@ -73,13 +73,13 @@ async function startAdvancedRules() {
 }
 
 function isFixturePage() {
-  return location.origin === "http://127.0.0.1:8765" && location.pathname === "/";
+  return location.origin === "http://127.0.0.2:8765" && location.pathname === "/";
 }
 
 function publishFixtureState() {
   if (!isFixturePage()) return;
   const markFixture = () => {
-    document.documentElement.dataset.adBlockerExtension = "0.0.1";
+    document.documentElement.dataset.adBlockerExtension = "0.0.2";
     document.documentElement.dataset.adBlockerAdvancedPhase = advancedState.phase;
     document.documentElement.dataset.adBlockerRuntimeRevision = RUNTIME_REVISION ?? "";
     document.documentElement.dataset.adBlockerAdvancedError = advancedState.error ?? "";

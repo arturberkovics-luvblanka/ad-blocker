@@ -254,8 +254,8 @@ test("manifest loads the runtime before content code and declares native executi
   assert.equal(manifest.background.service_worker, "background.js");
   assert.deepEqual(manifest.content_scripts.find(entry => entry.js.includes("main-world-probe.js")), {
     matches: [
-      "http://127.0.0.1/main-world.html",
-      "http://127.0.0.1/main-world-csp.html",
+      "http://127.0.0.2/main-world.html",
+      "http://127.0.0.2/main-world-csp.html",
     ],
     js: ["main-world-probe.js"],
     run_at: "document_start",
@@ -287,7 +287,7 @@ test("MAIN-world probe is exact-origin guarded and idempotent", () => {
   };
   const context = {
     document,
-    location: { origin: "http://127.0.0.1:8765", pathname: "/main-world.html" },
+    location: { origin: "http://127.0.0.2:8765", pathname: "/main-world.html" },
     performance: { now: () => 42 },
   };
   context.window = context;
@@ -306,7 +306,7 @@ test("MAIN-world probe is exact-origin guarded and idempotent", () => {
       documentElement: { dataset: {} },
       addEventListener: () => { throw new Error("must not register"); },
     },
-    location: { origin: "http://127.0.0.1:9999", pathname: "/main-world.html" },
+    location: { origin: "http://127.0.0.2:9999", pathname: "/main-world.html" },
     performance: { now: () => 0 },
   };
   rejected.window = rejected;
@@ -388,16 +388,16 @@ test("content status identifies a response outside the early event-delay window"
 });
 
 test("fixture publishes advanced diagnostics and stays restricted to the exact local origin", async () => {
-  const page = runContent({ origin: "http://127.0.0.1:8765", href: "http://127.0.0.1:8765/", root: null });
+  const page = runContent({ origin: "http://127.0.0.2:8765", href: "http://127.0.0.2:8765/", root: null });
   page.document.documentElement = { dataset: {} };
   page.ready();
   await settle();
-  assert.equal(page.document.documentElement.dataset.adBlockerExtension, "0.0.1");
+  assert.equal(page.document.documentElement.dataset.adBlockerExtension, "0.0.2");
   assert.equal(page.document.documentElement.dataset.adBlockerAdvancedPhase, "no_matching_rules");
   assert.equal(page.document.documentElement.dataset.adBlockerAdvancedError, "");
   assert.equal(page.document.documentElement.dataset.adBlockerAdvancedLimitations, "");
   assert.match(page.document.documentElement.dataset.adBlockerLookupMilliseconds, /^\d+$/);
-  assert.deepEqual(runContent({ origin: "http://127.0.0.1:8766" }).document.documentElement.dataset, {});
+  assert.deepEqual(runContent({ origin: "http://127.0.0.2:8766" }).document.documentElement.dataset, {});
 });
 
 test("background ignores message URL and derives lookup URLs from sender", async () => {
@@ -725,7 +725,7 @@ async function runPopup(response, tabs = [{ id: 3 }], metadata = { generation, r
 }
 
 test("popup distinguishes availability, loading, and advanced runtime failure", async () => {
-  const available = await runPopup({ version: "0.0.1", generation, runtimeRevision, scriptAvailable: true });
+  const available = await runPopup({ version: "0.0.2", generation, runtimeRevision, scriptAvailable: true });
   assert.match(available.textContent, /elérhető/);
   assert.deepEqual(JSON.parse(JSON.stringify(available.sendCalls[0])), [
     3,
@@ -733,21 +733,21 @@ test("popup distinguishes availability, loading, and advanced runtime failure", 
     { frameId: 0 },
   ]);
   assert.match((await runPopup({
-    version: "0.0.1", generation, runtimeRevision, scriptAvailable: true, advanced: { phase: "starting" },
+    version: "0.0.2", generation, runtimeRevision, scriptAvailable: true, advanced: { phase: "starting" },
   })).textContent, /betöltése folyamatban/);
   const failed = await runPopup({
-    version: "0.0.1", generation, runtimeRevision, scriptAvailable: true, advanced: { phase: "error" },
+    version: "0.0.2", generation, runtimeRevision, scriptAvailable: true, advanced: { phase: "error" },
   });
   assert.equal(failed.dataset.state, "unavailable");
   assert.match(failed.textContent, /hibát jelzett/);
   const late = await runPopup({
-    version: "0.0.1", generation, runtimeRevision, scriptAvailable: true,
+    version: "0.0.2", generation, runtimeRevision, scriptAvailable: true,
     advanced: { phase: "background_attempted_unverified", responseAfterDelayWindow: true },
   });
   assert.equal(late.dataset.state, "unavailable");
   assert.match(late.textContent, /késve érkeztek/);
   const limited = await runPopup({
-    version: "0.0.1", generation, runtimeRevision, scriptAvailable: true,
+    version: "0.0.2", generation, runtimeRevision, scriptAvailable: true,
     advanced: { phase: "background_attempted_unverified", limitations: ["css_origin_limited"] },
   });
   assert.equal(limited.dataset.state, "unavailable");
@@ -775,7 +775,7 @@ test("status handshake identifies the rule generation without another lookup", a
 test("popup requests a refresh for a page from an older rule generation", async () => {
   for (const oldGeneration of [undefined, "old-generation"]) {
     const status = await runPopup({
-      version: "0.0.1", scriptAvailable: true, generation: oldGeneration, runtimeRevision,
+      version: "0.0.2", scriptAvailable: true, generation: oldGeneration, runtimeRevision,
       advanced: { phase: "background_attempted_unverified" },
     });
     assert.equal(status.dataset.state, "unavailable");
@@ -786,7 +786,7 @@ test("popup requests a refresh for a page from an older rule generation", async 
 test("popup requests a refresh after a runtime-only update", async () => {
   for (const oldRevision of [undefined, "b".repeat(64)]) {
     const status = await runPopup({
-      version: "0.0.1", generation, scriptAvailable: true, runtimeRevision: oldRevision,
+      version: "0.0.2", generation, scriptAvailable: true, runtimeRevision: oldRevision,
     });
     assert.equal(status.dataset.state, "unavailable");
     assert.match(status.textContent, /frissítsd a lapot/i);
@@ -825,7 +825,7 @@ test("every scriptlet name used by the pinned rules is available in the bundled 
 test("popup never accepts a missing current-generation response", async () => {
   for (const metadata of [null, {}, { generation: "invalid" }, new Error("background unavailable")]) {
     const status = await runPopup({
-      version: "0.0.1", generation, scriptAvailable: true,
+      version: "0.0.2", generation, scriptAvailable: true,
     }, [{ id: 3 }], metadata);
     assert.equal(status.dataset.state, "unavailable");
     assert.match(status.textContent, /nem érhető el/);

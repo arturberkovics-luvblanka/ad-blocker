@@ -24136,4 +24136,4 @@ var AdBlockerAdvancedRuntime = (function (exports, browser$2) {
   return exports;
 
 })({}, browser);
-Object.defineProperty(AdBlockerAdvancedRuntime, "revision", { value: "740a6688e93de4a8652126b6a3487a8e911e02bc07badab1b52286daa4a5d5e6" });
+Object.defineProperty(AdBlockerAdvancedRuntime, "revision", { value: "cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e" });

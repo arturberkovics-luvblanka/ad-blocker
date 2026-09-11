@@ -3,7 +3,7 @@
 ## Csomag készítése
 
 A `package-macos.sh` egy már elkészült és érvényes `Ad Blocker.app` csomagból
-szabványos macOS component package fájlt készít. A verziót a
+szabványos macOS component package fájlt készít. A verziót az
 `extension/manifest.json` fájlból olvassa, és megköveteli, hogy az megegyezzen
 az alkalmazás `CFBundleShortVersionString` értékével.
 
@@ -12,10 +12,10 @@ bash code/scripts/package-macos.sh \
   "/teljes/útvonal/Ad Blocker.app"
 ```
 
-Az alapértelmezett kimenet:
+A v0.0.2 alapértelmezett kimenete:
 
 ```text
-builds/macOS/AdBlocker-0.0.1-macOS-arm64.pkg
+builds/macOS/AdBlocker-0.0.2-macOS-arm64.pkg
 ```
 
 Második argumentummal külön kimeneti mappa adható meg. A script:
@@ -25,59 +25,89 @@ Második argumentummal külön kimeneti mappa adható meg. A script:
 - staging payload root alatt pontosan az `Applications/Ad Blocker.app`
   útvonalat készíti elő;
 - a natív `pkgbuild --root` és `--component-plist` útvonalat használja;
-- a forrásból nem másolja át a Finder/resource-fork extended metadata
-  adatait, és elutasítja a kibontás után ténylegesen megmaradó AppleDouble
-  vagy `.DS_Store` payloadfájlokat;
-- minden felismert bundle-nél kikapcsolja a relocation- és verzióellenőrzést,
-  bekapcsolja a szigorú bundle identifier ellenőrzést, és teljes bundle-cserét
-  kér;
-- nem ad a csomaghoz preinstall vagy postinstall scriptet;
-- `pkgutil --expand-full` segítségével ellenőrzi a metadata- és payload-adatokat;
-- ellenőrzi a kibontott app aláírását és összeveti a fájljait az eredeti appal;
+- minden bundle-nél kikapcsolja a relocation- és verzióellenőrzést,
+  bekapcsolja a szigorú bundle identifier ellenőrzést, és teljes
+  bundle-cserét kér;
+- pontosan egy, végrehajtható `postinstall` scriptet csomagol be;
+- `pkgutil --expand-full` segítségével ellenőrzi a metadata-, script- és
+  payload-adatokat, köztük a postinstall forrással való bytepontos egyezését;
+- elutasítja a kibontás után megmaradó AppleDouble vagy `.DS_Store`
+  payloadfájlokat;
+- ellenőrzi a kibontott app aláírását és összeveti a fájljait az eredeti
+  appal;
 - kiírja az elkészült `.pkg` SHA-256 értékét.
 
-Meglévő, azonos nevű csomagot a script nem ír felül.
+Meglévő, azonos nevű csomagot a script nem ír felül. Az Installer mindig az
+`/Applications/Ad Blocker.app` útvonalra telepít, és nem helyezi át a korábbi
+`~/Applications` fejlesztői példányt.
 
-Az explicit component beállítások miatt az Installer nem keresi meg és nem
-írja felül a korábbi `~/Applications/Ad Blocker.app` fejlesztői példányt. A
-payload mindig az `/Applications/Ad Blocker.app` útvonalra kerül. A
-verzióellenőrzés az első `0.0.1` nyilvános kiadásnál ki van kapcsolva, ezért
-egy ugyanazon a célútvonalon lévő korábbi tesztverzió nem teszi
-kiszámíthatatlanná a telepítést. A bundle identifiernek ugyanakkor pontosan
-egyeznie kell.
+## Mit végez a postinstall?
+
+A v0.0.2 egy szűk, best-effort háttérindítást használ, hogy a Safari
+felismerhesse a containing appot. A script csak gyökérkötetre telepítéskor,
+legalább 501-es aktív console user mellett indítja az exact
+`/Applications/Ad Blocker.app` példányt a felhasználó saját környezetében:
+
+```text
+launchctl asuser UID sudo -u USER open -n -g ... --args --setup
+```
+
+Nincs rootként futó app-fallback. Hiányzó vagy nem megfelelő session, illetve
+indítási hiba esetén a telepítés kézi appmegnyitást kér. A script nem kapcsol
+be Safari-bővítményt, nem ad webhelyengedélyt, nem telepít tartós háttérsegédet,
+és nem módosít Safari- vagy macOS-biztonsági beállítást.
 
 ## Jelenlegi aláírási korlát
 
-A jelenlegi fejlesztői gépen a `security find-identity -v -p basic` eredménye
-`0 valid identities found`. A fejlesztői alkalmazás ad-hoc aláírású, a
-`package-macos.sh` pedig nem választ ki és nem talál ki tanúsítványt. Az így
-elkészült `.pkg` ezért nincs Developer ID Installer tanúsítvánnyal aláírva és
-nincs Apple által notarizálva.
+A v0.0.2 helyi Release buildje ad-hoc aláírású. A `package-macos.sh` nem
+választ ki és nem talál ki tanúsítványt. Az elkészült `.pkg` nincs Developer
+ID Installer tanúsítvánnyal aláírva és nincs Apple által notarizálva.
 
-Ez első nyilvános tesztcsomagként használható, de a macOS azonosítatlan
-fejlesztőre figyelmeztethet vagy blokkolhatja a megnyitását. Ha a rendszer
-felajánlja, a felhasználó a **Rendszerbeállítások → Adatvédelem és biztonság**
-oldalon kézzel engedélyezheti az adott telepítő megnyitását. A Gatekeepert és
-a SIP-et nem kell és nem szabad kikapcsolni; a csomag nem törli a quarantine
-jelzőt és nem módosít rendszerbiztonsági beállítást.
+A macOS azonosítatlan fejlesztőre figyelmeztethet vagy blokkolhatja a
+megnyitást. Ha a rendszer felajánlja, a felhasználó a
+**Rendszerbeállítások → Adatvédelem és biztonság** oldalon kézzel
+engedélyezheti az adott telepítőt. A Gatekeepert és a SIP-et nem kell és nem
+szabad kikapcsolni; a csomag nem törli a quarantine jelzőt.
 
-A figyelmeztetés nélküli nyilvános terjesztéshez később valódi Developer ID
-Application és Developer ID Installer aláírás, majd Apple notarizálás és
-stapling szükséges. Ez a folyamat nincs kész, és a jelenlegi csomagról nem
-állítható, hogy notarizált.
+A figyelmeztetés nélküli nyilvános terjesztéshez Developer ID Application és
+Developer ID Installer aláírás, Apple-notarizálás és stapling szükséges. Ez a
+folyamat még nem készült el.
 
 ## Telepítés és Safari
 
-1. Nyisd meg az `AdBlocker-0.0.1-macOS-arm64.pkg` fájlt, és telepítsd az
+A v0.0.2 még nincs GitHub-kiadásként közzétéve. A kiadási artifact elkészülte
+után a lépések:
+
+1. Nyisd meg az `AdBlocker-0.0.2-macOS-arm64.pkg` fájlt, és telepítsd az
    alkalmazást az `/Applications` mappába.
-2. Indítsd el az **Ad Blocker** alkalmazást.
-3. Nyisd meg a Safari **Beállítások → Bővítmények** oldalát.
+2. A telepítő megkísérli a háttér-host egyszeri indítását. Az appnak nincs
+   saját ablaka; szükség esetén megpróbálja megnyitni a Safari Extensions
+   beállítást. Ha a Safari még nem ismeri az extensiont, ez is sikertelen lehet.
+3. Ennél az ad-hoc tesztbuildnél előbb a Safari **Settings → Developer →
+   Allow unsigned extensions** kapcsolóját kell kézzel engedélyezni. Ha a
+   Developer lap hiányzik, az Advanced lapon engedélyezd a webfejlesztői
+   funkciók megjelenítését. A rendszer hitelesítést kérhet, és a fejlesztői
+   engedély Safari-kilépéskor visszaáll. Ezt a későbbi Developer ID-aláírás
+   váltja ki; a telepítő nem állítja át helyetted.
 4. Kézzel kapcsold be az **Ad Blocker – Szűrőlista** és az
    **Ad Blocker – Oldalellenőrzés** bővítményt.
 5. A webes bővítménynek kézzel add meg a szükséges webhely-hozzáférést, majd
    töltsd újra a már nyitott oldalakat.
+6. Ha a háttérindítás elmaradt, nyisd meg egyszer kézzel az
+   `/Applications/Ad Blocker.app` alkalmazást. Saját ablak helyett ugyanazt a
+   háttérbeállítást futtatja.
 
-A `.pkg` csak az alkalmazást másolja az `/Applications` mappába. Nem kapcsolja
-be a Safari-bővítményeket, nem ad nekik webhelyengedélyt, nem nyitja meg
-automatikusan a felhasználó alkalmazását, és nem módosít Safari- vagy macOS-
-védelmi beállítást.
+Az aktuális állapot helyi ellenőrzése:
+
+```bash
+"/Applications/Ad Blocker.app/Contents/MacOS/Ad Blocker" --diagnose
+```
+
+A diagnosztika kiírja a két Safari-réteg állapotát és a legutóbbi
+háttérbeállítás eredményét; nem kapcsol be bővítményt és nem ad
+webhelyengedélyt.
+
+A Release build, a csomag szerkezeti ellenőrzése és a postinstall 4/4 unit
+tesztje sikeres. Az élő unsigned-OFF próba nulla saját ablakkal és őszinte
+hibaállapottal lezárult. A valódi `.pkg` telepítés hitelesítésre vár;
+a pozitív, telepítés utáni Safari-próba még hátra van.

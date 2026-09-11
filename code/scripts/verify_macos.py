@@ -12,6 +12,9 @@ app = Path(sys.argv[1])
 with (app / "Contents/Info.plist").open("rb") as file:
     host_info = plistlib.load(file)
 assert host_info["CFBundleIdentifier"] == "org.local.adblocker", "Wrong app identifier"
+assert host_info.get("LSUIElement") is True, "macOS host must run without a Dock icon"
+source_manifest = json.loads((root / "extension/manifest.json").read_text())
+assert host_info["CFBundleShortVersionString"] == source_manifest["version"], "Wrong app version"
 subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True)
 
 for name, point in (("ContentBlocker", "content-blocker"), ("WebExtension", "web-extension")):
@@ -21,6 +24,7 @@ for name, point in (("ContentBlocker", "content-blocker"), ("WebExtension", "web
     assert info["CFBundleIdentifier"] == f"org.local.adblocker.{name}"
     assert info["NSExtension"]["NSExtensionPointIdentifier"] == f"com.apple.Safari.{point}"
     assert info["CFBundleShortVersionString"] == host_info["CFBundleShortVersionString"]
+    assert info["CFBundleVersion"] == host_info["CFBundleVersion"], "Mixed extension build versions"
     if name == "ContentBlocker":
         binary = plugin / "Contents/MacOS/AdBlockerContentBlocker.debug.dylib"
         if not binary.exists():

@@ -5,6 +5,12 @@ A **v0.0.1** az első nyilvános tesztkiadás, Apple Silicon Macre.
 
 [**macOS telepítő letöltése**](https://github.com/arturberkovics-luvblanka/ad-blocker/releases/download/v0.0.1/AdBlocker-0.0.1-macOS-arm64.pkg) · [Kiadások](https://github.com/arturberkovics-luvblanka/ad-blocker/releases)
 
+> A main ág már a még nem publikált v0.0.2 forrását tartalmazza. Ebben a
+> macOS host saját ablak nélkül végzi az első Safari-beállítást, a telepítő
+> pedig best-effort módon elindítja az aktív felhasználó környezetében. A
+> v0.0.2 valódi `.pkg` telepítési/hitelesítési és pozitív Safari-próbája még
+> hátra van; a fenti letöltés ezért továbbra is a v0.0.1 kiadás.
+
 ## Mit tartalmaz?
 
 - Natív Safari-szűrés: 97 505 szabály, AdGuard Base, Hufilter és célzott kiegészítések.

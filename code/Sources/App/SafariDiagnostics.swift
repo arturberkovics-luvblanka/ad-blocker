@@ -20,6 +20,13 @@ func runSafariDiagnostics(reload: Bool) async -> Bool {
         "bundledNativeGeneration": NativeRuleBundle.generation as Any? ?? NSNull(),
     ]
     var success = native != nil && native?.1 == nil
+    #if os(macOS)
+    let web = await SafariSetupState.web(host + ".WebExtension")
+    output["web"] = web.dictionary
+    output["lastBackgroundSetup"] = UserDefaults.standard.dictionary(forKey: "lastBackgroundSetup") as Any? ?? NSNull()
+    output["appPath"] = Bundle.main.bundlePath
+    output["appVersion"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
+    #endif
     if reload {
         let result: String? = await safariRequest(timeout: .seconds(60)) { done in
             SFContentBlockerManager.reloadContentBlocker(withIdentifier: host + ".ContentBlocker") { error in

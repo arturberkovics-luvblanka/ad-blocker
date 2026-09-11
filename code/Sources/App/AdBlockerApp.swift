@@ -14,8 +14,10 @@ enum AdBlockerMain {
             RunLoop.main.run()
             return
         }
-        #endif
+        MacBackgroundApp.run()
+        #else
         AdBlockerApp.main()
+        #endif
     }
 }
 
@@ -291,7 +293,7 @@ struct ContentView: View {
     private var header: some View {
         HStack {
             Text("Ad Blocker").font(.system(.headline, design: .rounded, weight: .bold))
-            Text("0.0.1 · Teszt").font(.caption).foregroundStyle(.secondary)
+            Text("0.0.2 · Teszt").font(.caption).foregroundStyle(.secondary)
                 .padding(.horizontal, 9).padding(.vertical, 5)
                 .background(.primary.opacity(0.04), in: Capsule())
             Spacer()

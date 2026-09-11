@@ -1,11 +1,11 @@
 "use strict";
 
 (() => {
-if (location.origin !== "http://127.0.0.1:8765") return;
-if (window.__adBlockerMainProbe?.version === "0.0.1") return;
+if (location.origin !== "http://127.0.0.2:8765") return;
+if (window.__adBlockerMainProbe?.version === "0.0.2") return;
 
 window.__adBlockerMainProbe = {
-  version: "0.0.1",
+  version: "0.0.2",
   startedAt: performance.now(),
   readyState: document.readyState,
 };

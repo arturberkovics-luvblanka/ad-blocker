@@ -98,6 +98,17 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.swift</string>
 		</dict>
+		<key>05D4EA1D6C0FFC36927A0459</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/MacBackgroundApp.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
 		<key>D2CE934BA3BD47EACA167AB3</key>
 		<dict>
 			<key>isa</key>
@@ -877,6 +888,13 @@
 			<key>fileRef</key>
 			<string>162A0AF17EAD35DB15BA8554</string>
 		</dict>
+		<key>7E7DB2F3C08055DF8167B1B6</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>05D4EA1D6C0FFC36927A0459</string>
+		</dict>
 		<key>B5ED3F30577DF994959502D0</key>
 		<dict>
 			<key>isa</key>
@@ -890,6 +908,7 @@
 				<string>9E25B231556221B9DEFC4E1B</string>
 				<string>5A260E14B0E09D0B7AEFAF7D</string>
 				<string>13AD2F1112607B8307784501</string>
+				<string>7E7DB2F3C08055DF8167B1B6</string>
 			</array>
 			<key>runOnlyForDeploymentPostprocessing</key>
 			<integer>0</integer>
@@ -1774,6 +1793,13 @@
 			<key>fileRef</key>
 			<string>162A0AF17EAD35DB15BA8554</string>
 		</dict>
+		<key>D40C73A125C2AEEA9C3E84F7</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>05D4EA1D6C0FFC36927A0459</string>
+		</dict>
 		<key>C03B347FBD496EF1C8515E0A</key>
 		<dict>
 			<key>isa</key>
@@ -1787,6 +1813,7 @@
 				<string>832B7CBF447EF71E8E93876B</string>
 				<string>6513390429423ECD570B999A</string>
 				<string>646F0FBD3331D096C4B2FB38</string>
+				<string>D40C73A125C2AEEA9C3E84F7</string>
 			</array>
 			<key>runOnlyForDeploymentPostprocessing</key>
 			<integer>0</integer>
@@ -2120,6 +2147,7 @@
 				<string>64C15C758CA59D66029F90F6</string>
 				<string>3284F45779E1A5C1A1D8FA70</string>
 				<string>162A0AF17EAD35DB15BA8554</string>
+				<string>05D4EA1D6C0FFC36927A0459</string>
 				<string>D2CE934BA3BD47EACA167AB3</string>
 				<string>6132B17002769460484FB7C0</string>
 				<string>11863230F22C5268BC92ECBE</string>

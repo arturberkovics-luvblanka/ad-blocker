@@ -1,19 +1,25 @@
-# Ad Blocker v0.0.1
+# Ad Blocker v0.0.2 forrás
 
-Natív Safari content blocker + Safari Web Extension, közös SwiftUI hosttal. A Mac-csomag: `../builds/macOS/AdBlocker-0.0.1-macOS.zip`. A telepített példány: `~/Applications/Ad Blocker.app`; az iCloud Desktop mappából közvetlenül ne futtasd.
+Natív Safari content blocker + Safari Web Extension. A macOS host ablak
+nélküli AppKit `LSUIElement` app; az iPhone/iPad host SwiftUI. A v0.0.2 még
+nincs GitHub-kiadásként közzétéve. A fejlesztői install példánya
+`~/Applications/Ad Blocker.app`, a `.pkg` célja
+`/Applications/Ad Blocker.app`; az iCloud Desktop mappából közvetlenül ne
+futtasd.
 
 ## Mappák
 
 | Mappa | Tartalom |
 |---|---|
-| `Sources/App/` | Mac/iPhone/iPad közös alkalmazás és állapotjelzés |
+| `Sources/App/` | Ablak nélküli macOS háttér-host, iOS/iPadOS app és állapotkezelés |
 | `Sources/ContentBlocker/` | A csomagolt Safari-szabálylista betöltése |
 | `Sources/WebExtension/` | A Safari webes extension natív belépési pontja |
 | `extension/` | Manifest, fejlett szabálymotor, oldaldiagnosztika, bővítménypopup |
 | `extension-runtime/` | A csomagolt JS-runtime belépési pontja és bemeneti hash-jegyzéke |
 | `filters/` | Rögzített forráslista, natív JSON és konverziós jelentés |
 | `vendor/` | A szabálykonverter rögzített forrása és licence |
-| `scripts/` | Projektgenerálás, build, helyi tesztszerver |
+| `scripts/` | Projektgenerálás, build, csomagolás és helyi tesztszerver |
+| `installer/` | A pkg egyetlen, ellenőrzött postinstall scriptje |
 | `tools/` | A függőségi és szabálykonverziós eszközök |
 | `tests/` | Kontrollos tesztoldal, JS-tesztek és natív WebKit-próba |
 | `docs/` | Telepítés, licencek, tényleges ellenőrzési eredmények |
@@ -28,20 +34,32 @@ Előfeltétel: teljes Xcode aktív fejlesztői útvonallal, Python 3. A JS-teszt
 bash code/scripts/build.sh macOS
 bash code/scripts/install-macos.sh
 bash code/scripts/build.sh iOS
-node --test code/tests/extension.test.mjs
+node --test code/tests/*.test.mjs
+python3 -m unittest code/tests/installer_postinstall_test.py
 bash code/scripts/test-advanced-native.sh
 bash code/scripts/test-advanced-webkit.sh
 # Külön terminálban futó serve_fixture.py mellett:
 bash code/scripts/test-webkit.sh
 ```
 
-A parancsokat a projekt gyökeréből futtasd. Az iOS parancs aláírás nélküli fordítási ellenőrzés, nem telepíthető IPA. A Mac parancs helyi aláírással készít tesztappot. Naplók: `../builds/logs/`. Az Xcode köztes fájljai a rendszer ideiglenes mappájába kerülnek: az iCloud Desktop által hozzáadott Finder-metaadatok különben megakaszthatják a codesigningot.
+A parancsokat a projekt gyökeréből futtasd. Az iOS parancs aláírás nélküli
+fordítási ellenőrzés, nem telepíthető IPA. A Mac parancs helyi aláírással
+készít tesztappot. A v0.0.2 Release build, a package szerkezeti ellenőrzése és
+a postinstall 4/4 unit tesztje sikeres; valódi `.pkg`
+telepítési/hitelesítési próba még nem történt. Naplók: `../builds/logs/`.
+Az Xcode köztes fájljai a rendszer ideiglenes mappájába kerülnek: az iCloud
+Desktop által hozzáadott Finder-metaadatok különben megakaszthatják a
+codesigningot.
 
 A `generate_project.py` a hat target egyszerű, külső projektgenerátor nélküli leírása. Tartós buildbeállítás-módosítást ebben végezz; a build újragenerálja az Xcode-projektet és a Configuration fájlokat. A Signing & Capabilities alatt kézzel megadott iOS Team csak a következő generálásig marad meg; eszközös tesztnél ezt később külön fejlesztői konfigurációba kell kivezetni.
 
 ## Első kipróbálás
 
-Részletesen: [SETUP.md](docs/SETUP.md). A helyi tesztoldal a projekt gyökerében levő `Teszt indítása.command` fájllal indul.
+Részletesen: [SETUP.md](docs/SETUP.md). A v0.0.2 macOS app saját ablak nélkül
+fut; szükség esetén csak a Safari Extensions beállítását nyitja meg. Az
+állapota a telepített bináris `--diagnose` kapcsolójával olvasható ki. A
+helyi tesztoldal a projekt gyökerében levő `Teszt indítása.command` fájllal
+indul.
 
 ## Valós korlátok
 

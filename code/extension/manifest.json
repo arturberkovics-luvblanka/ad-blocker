@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Ad Blocker – Oldalellenőrzés",
   "description": "Az Ad Blocker első tesztverziójának oldalengedély- és scriptellenőrzése.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "permissions": ["activeTab", "nativeMessaging", "scripting", "webNavigation"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {"service_worker": "background.js"},
@@ -14,8 +14,8 @@
     "world": "MAIN"
   }, {
     "matches": [
-      "http://127.0.0.1/main-world.html",
-      "http://127.0.0.1/main-world-csp.html"
+      "http://127.0.0.2/main-world.html",
+      "http://127.0.0.2/main-world-csp.html"
     ],
     "js": ["main-world-probe.js"],
     "run_at": "document_start",

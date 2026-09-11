@@ -71,6 +71,14 @@ STAGED_PACKAGE="$SCRATCH/$PACKAGE_NAME"
 PAYLOAD_ROOT="$SCRATCH/root"
 STAGED_APP="$PAYLOAD_ROOT/Applications/$(basename "$APP_PATH")"
 COMPONENT_PLIST="$SCRATCH/components.plist"
+INSTALLER_SCRIPTS="$SCRATCH/installer-scripts"
+POSTINSTALL="$CODE_DIR/installer/postinstall"
+
+[[ -f "$POSTINSTALL" && ! -L "$POSTINSTALL" ]] || fail "A saját postinstall script hiányzik vagy symlink."
+/bin/bash -n "$POSTINSTALL" || fail "A postinstall script szintaktikája hibás."
+mkdir -p "$INSTALLER_SCRIPTS"
+cp "$POSTINSTALL" "$INSTALLER_SCRIPTS/postinstall"
+chmod 755 "$INSTALLER_SCRIPTS/postinstall"
 
 mkdir -p "$PAYLOAD_ROOT/Applications"
 ditto --norsrc --noextattr "$APP_PATH" "$STAGED_APP"
@@ -122,6 +130,7 @@ fi
 pkgbuild \
   --root "$PAYLOAD_ROOT" \
   --component-plist "$COMPONENT_PLIST" \
+  --scripts "$INSTALLER_SCRIPTS" \
   --install-location / \
   --identifier "$PACKAGE_ID" \
   --version "$VERSION" \
@@ -130,8 +139,26 @@ pkgbuild \
 EXPANDED="$SCRATCH/expanded"
 pkgutil --expand-full "$STAGED_PACKAGE" "$EXPANDED"
 
-[[ -z "$(find "$EXPANDED" -type d -name Payload -prune -o -type d -name Scripts -print -quit)" ]] || \
-  fail "A csomag váratlan installer scriptet tartalmaz."
+python3 - "$EXPANDED" "$POSTINSTALL" <<'PY'
+import hashlib
+from pathlib import Path
+import sys
+
+expanded, source = map(Path, sys.argv[1:])
+scripts = expanded / "Scripts"
+if not scripts.is_dir() or scripts.is_symlink():
+    raise SystemExit("A csomag saját Scripts mappája hiányzik.")
+entries = list(scripts.iterdir())
+if len(entries) != 1 or entries[0].name != "postinstall":
+    raise SystemExit("A csomag váratlan installer scriptet tartalmaz.")
+actual = entries[0]
+if not actual.is_file() or actual.is_symlink() or not (actual.stat().st_mode & 0o111):
+    raise SystemExit("A csomag postinstall fájlja nem szabályos futtatható script.")
+expected_bytes = source.read_bytes()
+actual_bytes = actual.read_bytes()
+if actual_bytes != expected_bytes or hashlib.sha256(actual_bytes).digest() != hashlib.sha256(expected_bytes).digest():
+    raise SystemExit("A csomag postinstall tartalma eltér az ellenőrzött forrástól.")
+PY
 [[ -z "$(find "$EXPANDED/Payload" \( -name '._*' -o -name '.DS_Store' \) -print -quit)" ]] || \
   fail "A payload váratlan Finder/AppleDouble metadatafájlt tartalmaz."
 

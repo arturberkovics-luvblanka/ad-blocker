@@ -16,9 +16,22 @@ könyvtárában van. A `.pkg` készítése:
 bash code/scripts/package-macos.sh "/pontos/út/Ad Blocker.app"
 ```
 
+A v0.0.2 csomag alapértelmezett neve
+`builds/macOS/AdBlocker-0.0.2-macOS-arm64.pkg`. A csomagoló az app mellett az
+egyetlen engedélyezett `installer/postinstall` scriptet is kibontja és
+bytepontosan ellenőrzi. A postinstall regressziói külön futnak:
+
+```sh
+python3 -m unittest code/tests/installer_postinstall_test.py
+```
+
 A kiadás forrása tiszta checkoutból, általános `/private/tmp` buildútvonalon
 fordult. A publikus binárisokban nincs a fejlesztő saját home-mappájára
 mutató forrásútvonal. Developer ID hiányában a macOS app ad-hoc aláírású.
+
+A v0.0.2 Release build, a package strukturális ellenőrzése és a postinstall
+4/4 unit tesztje sikeres. A valódi `.pkg` telepítési/hitelesítési próba még
+nem történt meg, ezért a csomag publikálása előtt ez külön kiadási kapu.
 
 ## Natív konverter
 

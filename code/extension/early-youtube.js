@@ -3,7 +3,7 @@
  * @adguard/extended-css 2.1.1 and @adguard/scriptlets 2.4.2.
  * Each component is distributed under GPL-3.0.
  */
-// Runtime revision: 740a6688e93de4a8652126b6a3487a8e911e02bc07badab1b52286daa4a5d5e6
+// Runtime revision: cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e
 (() => {
   if (window.top !== window || location.hostname !== "www.youtube.com"
       || location.pathname !== "/watch" || !["http:", "https:"].includes(location.protocol)) return;
@@ -455,8 +455,8 @@
     console.log(e);
   }
 };
-  run({"engine":"safari-extension","name":"set-constant","args":["ytInitialPlayerResponse.adPlacements","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:740a6688e93de4a8652126b6a3487a8e911e02bc07badab1b52286daa4a5d5e6:[\"set-constant\",[\"ytInitialPlayerResponse.adPlacements\",\"undefined\"]]:"}, ["ytInitialPlayerResponse.adPlacements","undefined"]);
-  run({"engine":"safari-extension","name":"set-constant","args":["ytInitialPlayerResponse.adSlots","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:740a6688e93de4a8652126b6a3487a8e911e02bc07badab1b52286daa4a5d5e6:[\"set-constant\",[\"ytInitialPlayerResponse.adSlots\",\"undefined\"]]:"}, ["ytInitialPlayerResponse.adSlots","undefined"]);
-  run({"engine":"safari-extension","name":"set-constant","args":["ytInitialPlayerResponse.playerAds","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:740a6688e93de4a8652126b6a3487a8e911e02bc07badab1b52286daa4a5d5e6:[\"set-constant\",[\"ytInitialPlayerResponse.playerAds\",\"undefined\"]]:"}, ["ytInitialPlayerResponse.playerAds","undefined"]);
-  run({"engine":"safari-extension","name":"set-constant","args":["playerResponse.adPlacements","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:740a6688e93de4a8652126b6a3487a8e911e02bc07badab1b52286daa4a5d5e6:[\"set-constant\",[\"playerResponse.adPlacements\",\"undefined\"]]:"}, ["playerResponse.adPlacements","undefined"]);
+  run({"engine":"safari-extension","name":"set-constant","args":["ytInitialPlayerResponse.adPlacements","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e:[\"set-constant\",[\"ytInitialPlayerResponse.adPlacements\",\"undefined\"]]:"}, ["ytInitialPlayerResponse.adPlacements","undefined"]);
+  run({"engine":"safari-extension","name":"set-constant","args":["ytInitialPlayerResponse.adSlots","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e:[\"set-constant\",[\"ytInitialPlayerResponse.adSlots\",\"undefined\"]]:"}, ["ytInitialPlayerResponse.adSlots","undefined"]);
+  run({"engine":"safari-extension","name":"set-constant","args":["ytInitialPlayerResponse.playerAds","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e:[\"set-constant\",[\"ytInitialPlayerResponse.playerAds\",\"undefined\"]]:"}, ["ytInitialPlayerResponse.playerAds","undefined"]);
+  run({"engine":"safari-extension","name":"set-constant","args":["playerResponse.adPlacements","undefined"],"version":"4.3.0","verbose":false,"uniqueId":"org.local.adblocker:cbb195331053327af072e670704837fc5b18177a0f36054fa7b4f514b64d911e:[\"set-constant\",[\"playerResponse.adPlacements\",\"undefined\"]]:"}, ["playerResponse.adPlacements","undefined"]);
 })();

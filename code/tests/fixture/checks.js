@@ -8,7 +8,7 @@ window.testResults = () => ({
   controlLoaded: window.fixtureControlLoaded === true,
   networkBlocked: window.fixtureControlLoaded === true && window.fixtureAdLoaded !== true,
   cosmeticHidden: getComputedStyle(document.getElementById("fixture-ad-box")).display === "none",
-  webExtension: document.documentElement.dataset.adBlockerExtension === "0.0.1",
+  webExtension: document.documentElement.dataset.adBlockerExtension === "0.0.2",
   advancedPhase: document.documentElement.dataset.adBlockerAdvancedPhase ?? "unavailable",
   advancedError: document.documentElement.dataset.adBlockerAdvancedError ?? "",
   counter: count,

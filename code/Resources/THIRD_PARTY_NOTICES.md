@@ -1,4 +1,4 @@
-# Ad Blocker 0.0.1 — források és licencek
+# Ad Blocker 0.0.2 — források és licencek
 
 A saját alkalmazáskód GPL-3.0-or-later. Copyright (C) 2026 Ad Blocker contributors. Teljes licenc: az alkalmazás Resources/LICENSE fájlja.
 
@@ -12,6 +12,6 @@ A Web Extension futásidejű Swift-függőségei: PunycodeSwift 3.0.0 (MIT), swi
 
 A webes runtime az upstream Extension forrásból készül: @adguard/extended-css 2.1.1 és @adguard/scriptlets 2.4.2, GPL-3.0. A Scriptlets 2.4.2 célzott vendor-frissítés a `google-ima3-dai` IMA DAI mock támogatásához. Források: https://github.com/AdguardTeam/ExtendedCss és https://github.com/AdguardTeam/Scriptlets . A build a rögzített lockfile-t használja; a nyers JS-szabályokból előre regisztrált függvények készülnek. A böngésző saját `browser` API-ját használjuk, webextension-polyfill kód nem kerül a bundle-ba. A teljes licencszövegek a Resources/licenses mappában vannak.
 
-A kiadás teljes forrása, a módosított függőségek és buildeszközök: https://github.com/arturberkovics-luvblanka/ad-blocker/tree/v0.0.1 . A webes motorok eredeti forrásarchívumai és a Public Suffix List forrásadata a code/vendor/upstream-sources mappában található.
+A kiadás teljes forrása, a módosított függőségek és buildeszközök: https://github.com/arturberkovics-luvblanka/ad-blocker/tree/v0.0.2 . A webes motorok eredeti forrásarchívumai és a Public Suffix List forrásadata a code/vendor/upstream-sources mappában található.
 
 Konverziós korlát: a 12 076 fejlett szabály a külön webes motort és webhelyengedélyt igényli; 223 konverziós hibát a forrásprojekt külön naplóban tart nyilván. A Hufilter 17 hibája közül a 24.hu `$$script[tag-content="a2blckLayer"]` szabály is kiesik, ezért ez a speciális anti-adblock beavatkozás nem tekinthető működőnek. A végleges natív lista 97 505 szabály, ebből két saját helyi tesztszabály. A szabályok kézbesítése nem igazolja minden beavatkozás sikerét vagy a teljes reklámmentességet. Gépi jelentés: Resources/conversion-report.json.

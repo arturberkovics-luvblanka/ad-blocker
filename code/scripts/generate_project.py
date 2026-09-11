@@ -53,6 +53,7 @@ request_source = reference("Sources/App/SafariRequest.swift", "sourcecode.swift"
 diagnostics_source = reference("Sources/App/SafariDiagnostics.swift", "sourcecode.swift")
 activation_source = reference("Sources/App/NativeRuleActivation.swift", "sourcecode.swift")
 bundle_source = reference("Sources/App/NativeRuleBundle.swift", "sourcecode.swift")
+background_source = reference("Sources/App/MacBackgroundApp.swift", "sourcecode.swift")
 advanced_source = reference("Sources/WebExtension/AdvancedRuleStore.swift", "sourcecode.swift")
 advanced_rules = reference("filters/generated/adguard-base-advanced.txt", "text")
 engine_package = add("EnginePackage", "XCLocalSwiftPackageReference", relativePath="vendor/SafariConverterLib")
@@ -82,7 +83,7 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
                 "App": "Ad Blocker", "ContentBlocker": "Ad Blocker – Szűrőlista",
                 "WebExtension": "Ad Blocker – Oldalellenőrzés"}[kind],
             "CFBundlePackageType": "APPL" if kind == "App" else "XPC!",
-            "CFBundleShortVersionString": VERSION, "CFBundleVersion": "1",
+            "CFBundleShortVersionString": VERSION, "CFBundleVersion": "2",
         }
         if kind != "App":
             info["NSExtension"] = {
@@ -92,6 +93,7 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
             info["NSHumanReadableDescription"] = "Helyi Safari reklámblokkoló tesztverzió."
         elif platform == "macOS":
             info["NSPrincipalClass"] = "NSApplication"
+            info["LSUIElement"] = True
             info["LSMinimumSystemVersion"] = "$(MACOSX_DEPLOYMENT_TARGET)"
         else:
             info["UILaunchScreen"] = {}
@@ -123,7 +125,7 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
         product = add(name + "Product", "PBXFileReference", explicitFileType="wrapper.application" if kind == "App" else "wrapper.app-extension", path=product_name + suffix, sourceTree="BUILT_PRODUCTS_DIR", includeInIndex=0)
         products.append(product)
         resources = [rules] if kind == "ContentBlocker" else webfiles + [advanced_rules] if kind == "WebExtension" else app_resources
-        target_sources = [sources[kind], request_source, diagnostics_source, activation_source, bundle_source] if kind == "App" else [sources[kind], advanced_source] if kind == "WebExtension" else [sources[kind]]
+        target_sources = [sources[kind], request_source, diagnostics_source, activation_source, bundle_source, background_source] if kind == "App" else [sources[kind], advanced_source] if kind == "WebExtension" else [sources[kind]]
         phases = [phase(name + "Sources", "PBXSourcesBuildPhase", target_sources),
                   phase(name + "Resources", "PBXResourcesBuildPhase", resources),
                   phase(name + "Frameworks", "PBXFrameworksBuildPhase", [])]
@@ -149,7 +151,7 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
             schemes.append((name, target, product_name + suffix))
 
 product_group = add("Products", "PBXGroup", children=products, name="Products", sourceTree="<group>")
-main_group = add("MainGroup", "PBXGroup", children=list(sources.values()) + [request_source, diagnostics_source, activation_source, bundle_source, advanced_source, advanced_rules, rules] + webfiles + app_resources + [product_group], sourceTree="<group>")
+main_group = add("MainGroup", "PBXGroup", children=list(sources.values()) + [request_source, diagnostics_source, activation_source, bundle_source, background_source, advanced_source, advanced_rules, rules] + webfiles + app_resources + [product_group], sourceTree="<group>")
 add("Project", "PBXProject", attributes={"LastUpgradeCheck": "2700", "BuildIndependentTargetsInParallel": "YES"},
     buildConfigurationList=configs("Project", {"CLANG_ENABLE_MODULES": "YES"}), compatibilityVersion="Xcode 14.0",
     developmentRegion="hu", hasScannedForEncodings=0, knownRegions=["hu", "en", "Base"],

@@ -9,7 +9,7 @@ async function inspectPage() {
       browser.tabs.sendMessage(tab.id, { type: "adblocker:status" }, { frameId: 0 }),
       browser.runtime.sendMessage({ type: "adblocker:metadata" }),
     ]);
-    if (response?.scriptAvailable !== true || response.version !== "0.0.1") {
+    if (response?.scriptAvailable !== true || response.version !== "0.0.2") {
       throw new Error("Missing or outdated content script");
     }
     if (typeof metadata?.generation !== "string" || !/^[a-f0-9]{64}$/.test(metadata.generation)
