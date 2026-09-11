@@ -1,8 +1,9 @@
 # Beállítás
 
-A GitHubon jelenleg közzétett macOS csomag a v0.0.1. A main ág v0.0.2
+A GitHubon jelenleg közzétett macOS csomag a v0.0.1. A fejlesztői ág v0.0.2
 forrásában már elkészült az ablak nélküli háttérbeállítás, de ez a verzió még
-nincs kiadva, és a valódi `.pkg` telepítési/hitelesítési próbája hátra van.
+nincs kiadva. A valódi `.pkg` telepítés és automatikus háttérindítás már
+sikeres; a pozitív Safari-beállítás ellenőrzése még hátra van.
 
 A kiadott macOS csomag részletes leírása: [INSTALLER.md](INSTALLER.md).
 
@@ -15,7 +16,7 @@ környezetében. Ha ez nem lehetséges, nyisd meg egyszer kézzel az
 
 A host lekéri mindkét Safari-bővítmény állapotát. Szükség esetén egyszer
 megnyitja a Safari **Beállítások → Bővítmények** oldalát, majd legfeljebb
-120 másodpercig vár a felhasználói döntésre. Ezután:
+120 másodpercig vár a késleltetett felismerésre és a felhasználói döntésre. Ezután:
 
 1. kézzel kapcsold be az **Ad Blocker – Szűrőlista** és az
    **Ad Blocker – Oldalellenőrzés** bővítményt;

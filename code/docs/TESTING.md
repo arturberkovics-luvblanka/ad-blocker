@@ -59,8 +59,9 @@ vagy csak a reklám hiánya nem bizonyítja önmagában ennek az appnak a hatás
 
 ## Nyitott korlátok
 
-- A v0.0.2 valódi `.pkg` telepítési és macOS-hitelesítési próbája még nem
-  történt meg.
+- A v0.0.2 build 2 valódi `.pkg` telepítése és postinstall háttérindítása
+  sikeres; a telepített app mindkét extensionje és erőforrásai ellenőrizve.
+  A késleltetett felismerés javítását a build 3 külön ellenőrzi.
 - A v0.0.2 élő negatív próbája sikeres: Safari unsigned OFF mellett a
   háttér-host nulla saját ablakkal futott, SFErrorDomain 1 hibát rögzített,
   és nem állított sikeres aktiválást. Dupla indítás után is kilépett.

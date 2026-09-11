@@ -30,8 +30,9 @@ fordult. A publikus binárisokban nincs a fejlesztő saját home-mappájára
 mutató forrásútvonal. Developer ID hiányában a macOS app ad-hoc aláírású.
 
 A v0.0.2 Release build, a package strukturális ellenőrzése és a postinstall
-4/4 unit tesztje sikeres. A valódi `.pkg` telepítési/hitelesítési próba még
-nem történt meg, ezért a csomag publikálása előtt ez külön kiadási kapu.
+4/4 unit tesztje sikeres. A build 2 valódi `.pkg` telepítése és a postinstall
+felhasználói háttérindítása sikeres. A build 3 a késleltetett Safari-felismerést
+javítja; a pozitív Safari-beállítás még külön kiadási kapu.
 
 ## Natív konverter
 

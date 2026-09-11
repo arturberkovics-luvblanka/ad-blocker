@@ -109,5 +109,5 @@ webhelyengedélyt.
 
 A Release build, a csomag szerkezeti ellenőrzése és a postinstall 4/4 unit
 tesztje sikeres. Az élő unsigned-OFF próba nulla saját ablakkal és őszinte
-hibaállapottal lezárult. A valódi `.pkg` telepítés hitelesítésre vár;
+hibaállapottal lezárult. A valódi `.pkg` telepítés és a felhasználói háttérindítás sikeres;
 a pozitív, telepítés utáni Safari-próba még hátra van.

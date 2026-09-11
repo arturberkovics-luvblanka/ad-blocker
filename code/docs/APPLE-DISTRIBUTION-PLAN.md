@@ -51,14 +51,14 @@ pont továbbra is SwiftUI.
 
 Induláskor a host:
 
-1. lekéri mindkét extension állapotát, és ismeretlen eredménynél még kétszer,
-   egy-egy másodperc után próbálkozik;
+1. legfeljebb 120 másodpercig lekéri mindkét extension állapotát;
+   ismeretlen eredménynél is két másodpercenként újrapróbálkozik;
 2. már engedélyezett natív extensionnél betölti a csomagolt szabályokat;
 3. kikapcsolt állapotnál legfeljebb egyszer megnyitja a Safari Extensions
    beállítását, majd két másodpercenként, legfeljebb 120 másodpercig figyeli a
    felhasználói döntést;
-4. ismeretlen állapotnál diagnosztikai eredményt ment és kilép, ezért ezt nem
-   jelenti sikeres aktiválásként;
+4. ismeretlen állapotnál diagnosztikai eredményt ment, és a határidőig
+   tovább vár a felismerésre; ez nem számít sikeres aktiválásnak;
 5. nem ír Safari- vagy macOS-biztonsági beállítást, nem ad webhelyengedélyt,
    és nem telepít login itemet vagy LaunchAgentet.
 
@@ -99,7 +99,8 @@ Ez kényelmi indítás, nem Apple által garantált Safari-regisztrációs API, 
 nem jelent automatikus extension-engedélyezést. Fast User Switching esetén
 csak a `/dev/console` aktuális felhasználója célozható. Az Installer
 postinstall unit tesztjei 4/4 sikeresek, de a valódi `.pkg` telepítési és
-hitelesítési próba még hátra van.
+hitelesítési próba és a postinstall felhasználói háttérindítása sikeres;
+a pozitív Safari-beállítás még hátra van.
 
 Az `SMAppService` ehhez az egyszeri művelethez tartós és aránytalan
 megoldás lenne: kódaláírást és felhasználói jóváhagyást igényel, a user
@@ -154,7 +155,7 @@ Felhasználói feladat marad:
 A v0.0.2 host és postinstall elkészült, a Release build és a helyi strukturális
 csomagtesztek sikeresek. Még szükséges:
 
-- valódi `.pkg` telepítés és macOS-hitelesítési próba;
+- a késleltetett Safari-felismerés és a pozitív engedélyezési út ellenőrzése;
 - az aláíratlan Safari-bővítmény ismert blokkolási útjának élő ellenőrzése;
 - a felhasználó saját Team ID-jával Developer ID build és Installer-aláírás;
 - notarizálás, staple-ellenőrzés és tiszta profilú telepítési próba;

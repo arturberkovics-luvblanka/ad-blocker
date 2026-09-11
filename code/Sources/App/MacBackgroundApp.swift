@@ -78,17 +78,13 @@ final class MacBackgroundApp: NSObject, NSApplicationDelegate {
         let nativeID = identifier + ".ContentBlocker"
         let webID = identifier + ".WebExtension"
 
-        // Launch Services discovers extensions when the containing app starts.
-        // Give that asynchronous discovery a bounded opportunity to finish.
+        // Discovery and the user's Safari approval are asynchronous. Keep the
+        // same bounded setup alive through both instead of quitting on the
+        // first no-extension-found reply after installation.
+        let deadline = ContinuousClock.now.advanced(by: .seconds(120))
         var native = await SafariSetupState.native(nativeID)
         var web = await SafariSetupState.web(webID)
-        for _ in 0..<2 where !native.known || !web.known {
-            try? await Task.sleep(for: .seconds(1))
-            native = await SafariSetupState.native(nativeID)
-            web = await SafariSetupState.web(webID)
-        }
 
-        let deadline = ContinuousClock.now.advanced(by: .seconds(120))
         while !Task.isCancelled {
             if native.enabled {
                 let outcome = await NativeRuleBundle.activate(enabled: true)
@@ -105,7 +101,7 @@ final class MacBackgroundApp: NSObject, NSApplicationDelegate {
                 }
             }
 
-            if needsSettings {
+            if needsSettings && native.known && web.known {
                 needsSettings = false
                 let target = !native.enabled ? nativeID : webID
                 let error: String? = await safariRequest(timeout: .seconds(15)) { done in
@@ -123,9 +119,9 @@ final class MacBackgroundApp: NSObject, NSApplicationDelegate {
                 // Safari can produce the same API error. Never invent a cause
                 // or change Safari's developer/security preferences here.
                 record("extension-unavailable-check-signing-and-safari", native: native, web: web)
-                return
+            } else {
+                record("waiting-for-user-in-safari", native: native, web: web)
             }
-            record("waiting-for-user-in-safari", native: native, web: web)
             guard ContinuousClock.now < deadline else { return }
             try? await Task.sleep(for: .seconds(2))
             native = await SafariSetupState.native(nativeID)
