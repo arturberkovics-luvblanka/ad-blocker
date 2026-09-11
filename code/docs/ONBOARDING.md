@@ -1,8 +1,11 @@
-# macOS első beállítás — v0.0.2 build 5 fejlesztés
+# macOS első beállítás — v0.0.2 teszt-előkiadási jelölt
 
-Az új beállítási felület fejlesztés alatt van. Ez a leírás a forrásban készülő
-viselkedést rögzíti; a telepített build 4 korábbi Safari-próbái nem igazolják
-az új build végponttól végpontig tartó működését.
+Az új beállítási felület a build 7-ben ténylegesen telepítve lett. Az app
+mindkét Safari-réteget ON állapotúnak látta, a korábbi build öntesztjét
+helyesen elavultnak jelölte, majd az új önteszt mind az öt ellenőrzése
+sikeres lett, és az onboarding befejezhetővé vált. A duplikátummentes Safari-
+regisztráció és a célzott webhely- és YouTube-mátrix is igazolt. Részletek és
+nem tesztelt esetek: [LIVE-VALIDATION.md](LIVE-VALIDATION.md).
 
 ## Felhasználói út
 
@@ -44,6 +47,11 @@ Safari-kilépéskor visszaállhat. Ezt a sikeres önteszt nem oldja meg.
 A normál Developer ID-kiadás és a telepítési életciklus végső tesztje külön
 követelmény. A fejlesztői béta letöltési jogosultság nem bizonyít fizetős
 Apple Developer Program-tagságot.
+
+A v0.0.2 Developer ID nélkül csak egyértelműen megjelölt teszt-előkiadásként
+adható ki. Az aláíratlan extensionök Safari-kilépés utáni tartóssága nem
+teljesíthető kiadási ígéret; az alábbi Developer ID-s újraindítási sorok
+halasztott kapuk maradnak.
 
 ## Elfogadási vizsgálatok
 

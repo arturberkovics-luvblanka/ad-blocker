@@ -1,6 +1,16 @@
 ! Ad Blocker local supplementary rules
 ! 24.hu: an advertorial row has the observed .pr-row container and article tag.
 24.hu##.pr-row:has(article.m-articleWidget__wrap .m-articleWidget__tag)
+! 24.hu: exact observed FELIX campaign card; the surrounding markup has no paid marker.
+24.hu##article.m-articleWidget__wrap:has(a.m-articleWidget__link[href^="https://ng.24.hu/egyeb/2026/09/11/megerkeztek-a-felix-doubly-delicious-szaraz-macskaeledelek-ketszeres-finomsag-minden-falatban-x/"])
+! 24.hu: exact observed OkAuchan campaign entry in the current-news sidebar.
+24.hu##li.m-nonstopWidget__item:has(> a.m-nonstopWidget__link[href^="https://24.hu/tech/2026/09/11/itt-az-uj-okauchan-igazi-2-in-1/"])
+! hvg.hu: related-widget cards carrying its explicit advert tag, not editorial or partner labels.
+hvg.hu##.rltd_item_container:has(> a.rltd_item > span.rltd_tag:not(.rltd_article_tag))
+! hvg.hu: the observed advertising sidebar is isolated in this site-owned BrandLab section.
+hvg.hu##.sidebar-brandlab
+! Allrecipes: the observed site-wide MyRecipes app campaign banner, without hiding navigation links.
+allrecipes.com##.mntl-site-wide-notification:has(a[href^="https://myrecipesapp.onelink.me/Wc8m"])
 ! Preserve the supported script/XHR portion of the Base rule rejected for $object.
 ||media.net^$script,xmlhttprequest,third-party
 ! Exact Safari-compatible regex forms of two Base popup rules.

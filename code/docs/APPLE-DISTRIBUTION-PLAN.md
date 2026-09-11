@@ -43,23 +43,27 @@ felhasználói döntés marad. Az alkalmazás csak visszaolvashatja az eredmény
 aktiválhatja a már engedélyezett natív szabályokat, és szükség esetén egyszer
 megnyithatja a megfelelő Safari-beállítást.
 
-## Elkészült v0.0.2 háttérbeállítás
+## Elkészült v0.0.2 onboarding-forrás
 
-A macOS host `LSUIElement=true` agent appként, saját ablak és Dock-ikon nélkül
-fut. A macOS belépési pont AppKit run loopot használ; az iOS/iPadOS belépési
-pont továbbra is SwiftUI.
+A macOS host `LSUIElement=true` alapbeállítással és AppKit run loopban indul.
+Első telepítéskor látható, SwiftUI-alapú beállítóablakot mutat; egy korábban
+ellenőrzött azonos build automatikus `--setup` indítása jó kapcsolóállapotnál
+ablak nélkül kiléphet. Kézi megnyitáskor állapotképernyő és új
+működéspróba érhető el. Az iOS/iPadOS belépési pont továbbra is SwiftUI.
 
 Induláskor a host:
 
-1. legfeljebb 120 másodpercig lekéri mindkét extension állapotát;
-   ismeretlen eredménynél is két másodpercenként újrapróbálkozik;
-2. már engedélyezett natív extensionnél betölti a csomagolt szabályokat;
-3. kikapcsolt állapotnál legfeljebb egyszer megnyitja a Safari Extensions
-   beállítását, majd két másodpercenként, legfeljebb 120 másodpercig figyeli a
-   felhasználói döntést;
-4. ismeretlen állapotnál diagnosztikai eredményt ment, és a határidőig
-   tovább vár a felismerésre; ez nem számít sikeres aktiválásnak;
-5. nem ír Safari- vagy macOS-biztonsági beállítást, nem ad webhelyengedélyt,
+1. ellenőrzi a telepítési helyet, a két beágyazott extensiont és az esetleges
+   azonos bundle ID-jú másik futó példányt;
+2. időkorláttal lekéri mindkét extension állapotát, és ismeretlen eredményt
+   nem tekint sikernek;
+3. már engedélyezett natív extensionnél betölti a csomagolt szabályokat;
+4. kikapcsolt vagy ismeretlen állapotnál a beállítóablakból megnyithatóvá
+   teszi a megfelelő Safari Extensions beállítást;
+5. a beépített, rövid életű loopback tesztben külön ellenőrzi a natív
+   hálózati és kozmetikai hatást, az aktuális webes motor generációját és a
+   hasznos kontroll működését;
+6. nem ír Safari- vagy macOS-biztonsági beállítást, nem ad webhelyengedélyt,
    és nem telepít login itemet vagy LaunchAgentet.
 
 A `--diagnose` mód kiírja a legutóbbi háttérbeállítás normalizált JSON
@@ -97,10 +101,12 @@ A script:
 
 Ez kényelmi indítás, nem Apple által garantált Safari-regisztrációs API, és
 nem jelent automatikus extension-engedélyezést. Fast User Switching esetén
-csak a `/dev/console` aktuális felhasználója célozható. Az Installer
-postinstall unit tesztjei 4/4 sikeresek, de a valódi `.pkg` telepítési és
-hitelesítési próba és a postinstall felhasználói háttérindítása sikeres;
-a pozitív helyi Safari-beállítás kézi engedélyek után igazolt.
+csak a `/dev/console` aktuális felhasználója célozható. A telepítő jelenlegi
+regressziós tesztje 5/5 sikeres. A build 7 valódi frissítő `.pkg` telepítése,
+a telepített app és a Release termék egyezése, valamint az új onboarding-
+önteszt sikeres. A célzott webhelymátrix, a kontrollos YouTube-próba és a
+duplikátummentes extensionregisztráció ellenőrzése is lezárult. Ez a helyi
+teszt-előkiadás eredménye; a Developer ID-s életcikluspróbák még hátravannak.
 
 Az `SMAppService` ehhez az egyszeri művelethez tartós és aránytalan
 megoldás lenne: kódaláírást és felhasználói jóváhagyást igényel, a user
@@ -152,12 +158,22 @@ Felhasználói feladat marad:
 - a két Safari extension kézi bekapcsolása;
 - a webes extension webhely-hozzáférésének kézi engedélyezése.
 
-A v0.0.2 host és postinstall elkészült, a Release build és a helyi strukturális
-csomagtesztek sikeresek. Még szükséges:
+A v0.0.2 onboarding- és installerforrása elkészült; a build 7 telepítési,
+csomagegyezési és onboarding-öntesztje sikeres. A normál Developer ID-s
+közvetlen kiadáshoz még szükséges:
 
 - a felhasználó saját Team ID-jával Developer ID build és Installer-aláírás;
 - notarizálás, staple-ellenőrzés és tiszta profilú telepítési próba;
-- ezek után a hash-ellenőrzött, Developer ID-aláírt nyilvános kiadás publikálása.
+- ezek után a hash-ellenőrzött, Developer ID-aláírt normál nyilvános kiadás
+  publikálása.
+
+Developer ID nélkül külön, egyértelműen jelölt nyilvános macOS
+teszt-előkiadás készülhet, ha a pontos csomag telepítési és Safari-próbái
+sikeresek. Ennél az **Allow unsigned extensions** kézi kapcsoló és annak
+Safari-kilépés utáni visszaállása dokumentált korlát marad; tartós működés nem
+állítható róla.
+
+A build 7 aktuális élő állapota: [LIVE-VALIDATION.md](LIVE-VALIDATION.md).
 
 Jelszót, Apple Account tokent vagy notarizációs titkot nem szabad forrásba,
 parancssori argumentumba vagy naplóba írni. A későbbi automatizálás

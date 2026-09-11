@@ -1,8 +1,9 @@
 # Ad Blocker beállítása Macen
 
-A v0.0.2 build 5 forrásában új, látható első beállítás készül. A GitHubon
-korábban közzétett v0.0.1 csomag ettől eltér. A build és a helyi tesztek nem
-helyettesítik a Developer ID-kiadás és a Safari-újraindítás ellenőrzését.
+A v0.0.2 build 7 tartalmazza az új, látható első beállítást. A csomag tényleges
+telepítése és öt ellenőrzéses Safari-öntesztje sikeres; a célzott webhely- és
+YouTube-mátrix lezárult. A későbbi Developer ID-kiadás Safari-újraindítási
+tartóssági próbája külön követelmény.
 
 ## Első telepítés és megnyitás
 
@@ -60,7 +61,8 @@ küldeni. Hiba esetén nyisd meg az appot vagy a Safari bővítménymenüjét.
 
 A telepítő és a kiadási aláírás részletei: [INSTALLER.md](INSTALLER.md).
 Az onboarding állapotkezelése és elfogadási kapui: [ONBOARDING.md](ONBOARDING.md).
-A tényleges teszteredmények: [TESTING.md](TESTING.md).
+A jelenlegi élő állapot: [LIVE-VALIDATION.md](LIVE-VALIDATION.md). A részletes
+és történeti teszteredmények: [TESTING.md](TESTING.md).
 
 A telepített app `--diagnose` módja nem nyit ablakot és nem indít működéspróbát;
 a két réteget, a buildet és a legutóbbi igazolt onboardingot olvassa vissza.

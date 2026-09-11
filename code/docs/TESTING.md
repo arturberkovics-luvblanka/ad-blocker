@@ -1,5 +1,67 @@
 # v0.0.2 forrásellenőrzések
 
+## Build 7 — telepített jelölt és új célzott szűrők, 2026-09-11
+
+A `AdBlocker-0.0.2-build7-macOS-arm64.pkg` valódi build 5 → build 7
+Installer-frissítése sikeres. A receipt verziója `0.0.2.7`; a telepített app
+`verify_macos.py` ellenőrzése sikeres, és bájtszinten egyezik a Release appal.
+Az app mindkét Safari-réteget ON állapotúnak látta, a build 5 régi öntesztjét
+helyesen elavultnak minősítette, majd az új önteszt mind az öt ellenőrzése
+sikeres lett. Az aktuális élő állapot: [LIVE-VALIDATION.md](LIVE-VALIDATION.md).
+
+Az ezt megelőző élő Safari-próba a 24.hu kezdőlapján két jelöletlen
+reklámkártyát talált:
+a FELIX-kampányt a fő rácsban és az OkAuchan-kampányt az aktuális hírek között.
+A szabályok a két megfigyelt kampány pontos URL-jét és saját kártyakonténerét
+célozzák; nem általánosítjuk őket más `/egyeb/` vagy `/tech/` cikkekre. A
+fixture megőrzi a normál NG-cikket, a hasonló, de nem egyező URL-t, az
+előfizetői cikket és az aktuális hírek szerkesztői szomszédját.
+
+A hvg.hu élő cikkoldalának „Ez is érdekelhet” rácsában a reklámok és a rendes
+cikkek közös listában érkeztek. A widget DOM-ja és nyilvános forrása szerint az
+explicit reklám külön `.rltd_tag` elemet kap; a külső cikk címkéje ezen felül
+`.rltd_article_tag`, a rendes HVG-cikk pedig címke nélküli. A célzott szelektor
+csak az első eset teljes `.rltd_item_container` elemét rejti. A külön
+`.sidebar-brandlab` konténerű BrandLab reklámblokk is rejtett. A fixture a
+szerkesztői és a partnercímkés ajánlót, valamint egy normál oldalsávot láthatón
+hagy.
+
+Az Allrecipes élő receptoldalán megfigyelt sárga MyRecipes app-promóció saját
+`.mntl-site-wide-notification` bannergyökérben és pontos
+`myrecipesapp.onelink.me/Wc8m` CTA-val jelent meg. A szabály ennek együttállását
+célozza. A fixture egy más tartalmú site-wide értesítést, a fejléc normál „Get
+the app” linkjét és a recept „Save” gombját láthatón hagy.
+
+- Az öt új szelektor a forrásszabályok számát 138 529-ről 138 534-re, a
+  Safari-kompatibilis forrásszabályokét 128 440-ről 128 445-re emelte.
+- A konverter a szelektorokat a 24.hu, hvg.hu és Allrecipes már létező natív
+  kozmetikai objektumába vonta össze. A végleges lista ezért továbbra is
+  97 507 JSON-szabályobjektum, a fejlett lista pedig változatlanul 12 077
+  szabály.
+- A három kibővített domainobjektum minden korábbi szelektora megmaradt; a
+  többi 97 504 szabályobjektum bájtszinten változatlan, és a fejlett
+  szabályfájl is bájtszinten azonos.
+- A teljes 97 507-es lista az új pozitív/negatív fixture-rel WebKitben
+  lefordult és sikeresen lefutott. A 44/44 JavaScript-teszt és a runtime-
+  ellenőrzés is sikeres.
+- Natív lista SHA-256:
+  `1b150ecfd69c3af111042b0f229589ea5d01aa395a87164bc53f9fb863917554`.
+  Szabálykészlet SHA-256:
+  `9fb31e9bd9b25831bd6413c38fb2b8ca723ba7e32019d8d038e2c77ecc0a91ed`.
+  A fejlett lista SHA-256 értéke változatlan:
+  `6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02`.
+  Runtime revision:
+  `660fc08c71affaaa6ff789001f018ce3c406b3de8c45aa00feffb3127f77e743`.
+
+A build 7 app-, pkg-, telepítési és onboarding-ellenőrzése megtörtént. A három
+javított webhely élő visszatesztje, a duplikátummentes regisztráció és a
+kontrollos YouTube-minta is sikeres; az oldalon belüli YouTube-videóváltás
+működött. A dinamikusan szerkesztett fizetett kártyák jövőbeli URL-, osztály-
+vagy jelölésváltozata kikerülheti ezeket a szabályokat, és ugyanez igaz az
+Allrecipes app-banner kampányazonosítójának változására. A mostani bizonyíték
+nem terjed ki ismeretlen kampányokra vagy videóba szerkesztett szponzorációra.
+Pontos élő eredmények: [LIVE-VALIDATION.md](LIVE-VALIDATION.md).
+
 ## Build 5 — onboarding és helyi önellenőrzés, 2026-09-11
 
 Az új forrásból a macOS Release build sikeres (0.0.2/build 5, arm64), a
@@ -28,31 +90,19 @@ nélkül; nem készülékteszt.
 - Az első két képernyő külön UI-előnézetben vizuálisan és CUA-val ellenőrizve.
   Ez nem a telepített új app vagy a Safari végponttól végpontig tartó próbája.
 
-**Még nincs teljesítve:** build 5 valódi pkg-telepítése, az új onboarding
-pozitív Safari-próbája, azonos verzió újratelepítése és aláírt A→B frissítése,
-profil/privát/engedély-visszavonási UI-mátrix, 5 Safari- és 3 gépújraindítás,
-valódi hibából helyreállítás. Nincs Developer ID vagy notarizálás.
+Ebben a build 5 fázisban a kiadás előtti élő validáció még függőben volt. A
+beágyazott licencjegyzéket és a célzott szűrőket tartalmazó későbbi build 7
+telepítési és onboarding-próbája ezt a részt felváltotta. Az azonos build
+újratelepítése, a nyilvános v0.0.1→v0.0.2 frissítés, a profil-, privát- és
+engedély-visszavonási mátrix továbbra is nyitott. Nincs Developer ID vagy
+notarizálás.
 
-A helyi csomag: `../../builds/releases/v0.0.2/build5/AdBlocker-0.0.2-build5-macOS-arm64.pkg`.
+A build 5 elkülönítetten ellenőrzött, de a licencjegyzék javítása előtti
+csomagjának neve `AdBlocker-0.0.2-build5-macOS-arm64.pkg` volt; a régi helyi
+telepítők takarításakor ezt a példányt is eltávolítottuk.
 SHA-256: `aa5824a47fa076a1c23bac6b03d64d1647d096fc0fe281a3b384361b35ad925a`.
-A telepítési kísérlet rendszergazdai hitelesítést kér; addig a /Applications
-példány továbbra build 4. Az alábbi build 4 bejegyzések történetiek.
-
-A GitHubon jelenleg közzétett kiadás a v0.0.1. A helyi munkapéldány v0.0.2
-onboardingja helyben elkészült, de még nincs publikálva. A natív szabálylista
-változatlan: 97 505 szabály, SHA-256
-`508b0900171a9eb4a0e6b4367d33d4566851a6cdeea16fdb46cac00c020961a8`.
-
-- Saját JavaScript-regressziók: 39/39 sikeres a v0.0.2 forrásával.
-- A macOS Release és a közös iOS Release build sikeres; az iOS build
-  aláíratlan, készülékes teszt nem történt.
-- Az ablak nélküli macOS host Release buildje sikeres. A host saját ablak
-  nélkül indult a helyi buildpróbában, és a diagnosztika strukturált
-  állapotot adott.
-- A postinstall unit tesztjei 4/4 sikeresek: aktív user, hiányzó/nem megfelelő
-  user, indítási hiba és a csomagolt script pontos szerkezete.
-- A v0.0.2 `.pkg` strukturális kibontási, payload-, aláírás- és scriptellenőrzése
-  sikeres.
+A build 7 aktuális artefaktuma és élő eredménye a dokumentum elején szerepel.
+Az alábbi build 4 bejegyzések történetiek.
 
 ## Build 4 — tényleges Safari-próba
 
@@ -134,8 +184,8 @@ vagy csak a reklám hiánya nem bizonyítja önmagában ennek az appnak a hatás
   és nem állított sikeres aktiválást. Dupla indítás után is kilépett.
   A pozitív, telepítés utáni helyi próba később a build 4-gyel sikeres lett.
   A csomag nem Developer ID-aláírt és nem notarizált.
-- A v0.0.2 még nem GitHub-kiadás; a nyilvános letöltési link továbbra is a
-  v0.0.1-re mutat.
+- A v0.0.2 build 7 ad-hoc macOS teszt-előkiadás; Developer ID-aláírás és
+  notarizálás nincs.
 - Nincs teljes webre vagy minden YouTube-variánsra vonatkozó garancia.
 - Nincs valódi iPhone/iPad teszt; az aláírás nélküli iOS build nem telepíthető IPA.
 - 223 konverziós hiba a `filters/generated/adguard-base-unsupported.log` fájlban.

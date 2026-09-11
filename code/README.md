@@ -2,10 +2,11 @@
 
 Natív Safari content blocker + Safari Web Extension. A macOS host AppKit
 app: az első indításkor érthető beállítóablakot, később kézzel megnyitható
-állapotablakot mutat; egy ellenőrzötten kész frissítés háttérindítása csendes.
-Az iPhone/iPad host SwiftUI. A v0.0.2 még nincs
-GitHub-kiadásként közzétéve. A rendes telepítési cél mindig
-`/Applications/Ad Blocker.app`; külön helyi tesztpéldányt csak explicit
+állapotablakot mutat; az adott buildhez korábban sikeresen ellenőrzött
+beállítás automatikus `--setup` indítása csendes lehet.
+Az iPhone/iPad host SwiftUI. A v0.0.2 build 7 ad-hoc aláírású macOS
+teszt-előkiadás. A rendes telepítési cél mindig `/Applications/Ad Blocker.app`;
+külön helyi tesztpéldányt csak explicit
 `install-macos.sh --local-test-path` argumentum hozhat létre. Az iCloud
 Desktop mappából közvetlenül ne futtasd.
 
@@ -45,10 +46,13 @@ bash code/scripts/test-webkit.sh
 ```
 
 A parancsokat a projekt gyökeréből futtasd. Az iOS parancs aláírás nélküli
-fordítási ellenőrzés, nem telepíthető IPA. A Mac parancs helyi aláírással
-készít tesztappot. A v0.0.2 Release build, a package szerkezeti ellenőrzése és
-a telepítő 5/5 unit tesztje sikeres; valódi `.pkg`
-telepítési/hitelesítési próba és a build 4 pozitív helyi Safari-próbája sikeres. Naplók: `../builds/logs/`.
+fordítási ellenőrzés, nem telepíthető IPA. A Mac parancs helyi ad-hoc
+aláírással készít tesztappot. A build 7 valódi frissítő telepítése, a telepített
+app és a Release termék egyezése, valamint az új, öt ellenőrzéses onboarding-
+önteszt sikeres. A tiszta extensionregisztráció, az öt célzott javítás és a
+három YouTube-videós mátrix is élő Safari-próbát kapott. Pontos állapot és nem
+tesztelt esetek: [LIVE-VALIDATION.md](docs/LIVE-VALIDATION.md). Naplók:
+`../builds/logs/`.
 Az Xcode köztes fájljai a rendszer ideiglenes mappájába kerülnek: az iCloud
 Desktop által hozzáadott Finder-metaadatok különben megakaszthatják a
 codesigningot.
@@ -67,10 +71,15 @@ kapcsolójával is olvasható ki.
 ## Valós korlátok
 
 - A natív lista és a külön advanced/scriptlet motor be van építve. A konverziós hibák külön jelentésben szerepelnek.
-- A webes motor a rögzített AdGuard-szabályokat futtatja; a YouTube szabályainak lookupja és JS-regisztrációja ellenőrzött. A felhasználó pozitív saját teszteket jelzett; minden videóra vonatkozó garancia nincs.
+- A webes motor a rögzített AdGuard-szabályokat futtatja; a YouTube lookup,
+  JS-regisztráció, egy reklámos OFF/ON mintavideó és egy oldalon belüli
+  videóváltás ellenőrzött. Ez nem minden videóra vagy videóba szerkesztett
+  szponzorációra vonatkozó garancia.
 - Teljes popupvédelem, automatikus sütielutasítás és internetes listafrissítés még hiányzik. A content-fallback scriptinjektálása szigorú CSP mellett meghiúsulhat.
 - A build-minimum macOS 14 / iOS 17, de csak a ténylegesen tesztelt rendszerekhez tartozhat működési állítás.
-- Készülék- és Safari-igazolás: [TESTING.md](docs/TESTING.md). Egy WebKit-próba önmagában nem Safari-extension teszt.
+- Készülék- és Safari-igazolás: [LIVE-VALIDATION.md](docs/LIVE-VALIDATION.md)
+  és [TESTING.md](docs/TESTING.md). Egy WebKit-próba önmagában nem
+  Safari-extension teszt.
 
 A Safari-válaszok időkorlátjának regressziós tesztje:
 

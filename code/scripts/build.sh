@@ -82,6 +82,24 @@ if [ "$PLATFORM" = macOS ]; then
     # Keep a test zip on iCloud Desktop: FinderInfo can reappear on unpacked apps.
     ditto -c -k --keepParent --norsrc --noextattr "$APP" "$PROJECT_DIR/builds/macOS/AdBlocker-$VERSION-macOS.zip"
     echo "Helyi tesztcsomag: $PROJECT_DIR/builds/macOS/AdBlocker-$VERSION-macOS.zip"
+
+    # Xcode registers a built macOS app with LaunchServices. Do not leave its
+    # two development-only Safari extensions alongside /Applications after a
+    # successful local build. This never targets the installed app or a
+    # distribution build.
+    APP_STANDARDIZED="$(cd "$(dirname "$APP")" && pwd -P)/$(basename "$APP")"
+    if [[ "$APP_STANDARDIZED" == "/Applications/Ad Blocker.app" ]]; then
+      echo "FIGYELMEZTETÉS: a helyi PlugInKit-takarítás kihagyva; a build appja az /Applications példány."
+    else
+      for EXTENSION in ContentBlocker WebExtension; do
+        DEVELOPMENT_EXTENSION="$APP/Contents/PlugIns/AdBlocker$EXTENSION.appex"
+        if [[ ! -d "$DEVELOPMENT_EXTENSION" || -L "$DEVELOPMENT_EXTENSION" ]]; then
+          echo "FIGYELMEZTETÉS: a fejlesztői PlugInKit-takarítás nem futott; hibás extension útvonal: $DEVELOPMENT_EXTENSION" >&2
+        elif ! pluginkit -r "$DEVELOPMENT_EXTENSION"; then
+          echo "FIGYELMEZTETÉS: a fejlesztői PlugInKit-takarítás sikertelen: $DEVELOPMENT_EXTENSION" >&2
+        fi
+      done
+    fi
   fi
 else
   echo 'Az iOS build aláírás nélkül készült; fizikai készülékre még nem telepíthető.'

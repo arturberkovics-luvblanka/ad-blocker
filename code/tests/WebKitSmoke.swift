@@ -16,24 +16,35 @@ final class SmokeTest: NSObject, WKNavigationDelegate {
                 fail("Rule JSON is not an array")
                 return
             }
-            let selector = ".pr-row:has(article.m-articleWidget__wrap .m-articleWidget__tag)"
-            let generatedRuleExists = rules.contains { rule in
-                let action = rule["action"] as? [String: Any]
-                let trigger = rule["trigger"] as? [String: Any]
-                let domains = trigger?["if-domain"] as? [String]
-                return (action?["selector"] as? String)?.contains(selector) == true
-                    && domains?.contains("*24.hu") == true
-            }
-            guard generatedRuleExists else {
-                fail("Missing generated 24.hu advertorial rule")
-                return
+            let scopedSelectors = [
+                (".pr-row:has(article.m-articleWidget__wrap .m-articleWidget__tag)", "*24.hu"),
+                ("article.m-articleWidget__wrap:has(a.m-articleWidget__link[href^=\"https://ng.24.hu/egyeb/2026/09/11/megerkeztek-a-felix-doubly-delicious-szaraz-macskaeledelek-ketszeres-finomsag-minden-falatban-x/\"])", "*24.hu"),
+                ("li.m-nonstopWidget__item:has(> a.m-nonstopWidget__link[href^=\"https://24.hu/tech/2026/09/11/itt-az-uj-okauchan-igazi-2-in-1/\"])", "*24.hu"),
+                (".rltd_item_container:has(> a.rltd_item > span.rltd_tag:not(.rltd_article_tag))", "*hvg.hu"),
+                (".sidebar-brandlab", "*hvg.hu"),
+                (".mntl-site-wide-notification:has(a[href^=\"https://myrecipesapp.onelink.me/Wc8m\"])", "*allrecipes.com"),
+            ]
+            for (selector, domain) in scopedSelectors {
+                let generatedRuleExists = rules.contains { rule in
+                    let action = rule["action"] as? [String: Any]
+                    let trigger = rule["trigger"] as? [String: Any]
+                    let domains = trigger?["if-domain"] as? [String]
+                    return (action?["selector"] as? String)?.contains(selector) == true
+                        && domains?.contains(domain) == true
+                }
+                guard generatedRuleExists else {
+                    fail("Missing generated 24.hu rule: \(selector)")
+                    return
+                }
             }
             // The product rule is scoped to 24.hu. Add an otherwise identical
-            // local-only rule so WebKit can exercise the selector on the fixture.
-            rules.append([
-                "trigger": ["url-filter": ".*", "if-domain": ["127.0.0.1"]],
-                "action": ["type": "css-display-none", "selector": selector],
-            ])
+            // local-only copy so WebKit can exercise each selector on the fixture.
+            for (selector, _) in scopedSelectors {
+                rules.append([
+                    "trigger": ["url-filter": ".*", "if-domain": ["127.0.0.1"]],
+                    "action": ["type": "css-display-none", "selector": selector],
+                ])
+            }
             let fixtureJSON = try String(decoding: JSONSerialization.data(withJSONObject: rules), as: UTF8.self)
             store.compileContentRuleList(forIdentifier: "AdBlockerSmoke", encodedContentRuleList: fixtureJSON) { list, error in
                 guard let list else { self.fail("Rule compilation: \(error?.localizedDescription ?? "unknown error")"); return }
@@ -56,15 +67,52 @@ final class SmokeTest: NSObject, WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if hufilterFixture {
-            webView.evaluateJavaScript("JSON.stringify({advertorial: getComputedStyle(document.getElementById('advertorial-row')).display === 'none', editorial: getComputedStyle(document.getElementById('editorial-row')).display !== 'none'})") { value, error in
+            let script = """
+                JSON.stringify({
+                    advertorial: getComputedStyle(document.getElementById('advertorial-row')).display === 'none',
+                    editorial: getComputedStyle(document.getElementById('editorial-row')).display !== 'none',
+                    felix: getComputedStyle(document.getElementById('felix-sponsored-card')).display === 'none',
+                    ngEditorial: getComputedStyle(document.getElementById('ng-editorial-card')).display !== 'none',
+                    ngNearMatch: getComputedStyle(document.getElementById('ng-near-match-card')).display !== 'none',
+                    subscriber: getComputedStyle(document.getElementById('subscriber-article')).display !== 'none',
+                    okauchan: getComputedStyle(document.getElementById('okauchan-sponsored-item')).display === 'none',
+                    ordinaryCurrent: getComputedStyle(document.getElementById('ordinary-current-item')).display !== 'none',
+                    hvgSponsored: getComputedStyle(document.getElementById('hvg-sponsored-card')).display === 'none',
+                    hvgEditorial: getComputedStyle(document.getElementById('hvg-editorial-card')).display !== 'none',
+                    hvgPartnerLabel: getComputedStyle(document.getElementById('hvg-partner-label-card')).display !== 'none',
+                    hvgBrandLab: getComputedStyle(document.getElementById('hvg-brandlab')).display === 'none',
+                    hvgEditorialSidebar: getComputedStyle(document.getElementById('hvg-editorial-sidebar')).display !== 'none',
+                    allrecipesBanner: getComputedStyle(document.getElementById('allrecipes-app-banner')).display === 'none',
+                    allrecipesOtherNotice: getComputedStyle(document.getElementById('allrecipes-other-notification')).display !== 'none',
+                    allrecipesNavigation: getComputedStyle(document.getElementById('allrecipes-navigation')).display !== 'none',
+                    allrecipesSave: getComputedStyle(document.getElementById('allrecipes-save-recipe')).display !== 'none'
+                })
+                """
+            webView.evaluateJavaScript(script) { value, error in
                 guard error == nil, let text = value as? String,
                       let data = text.data(using: .utf8),
                       let result = try? JSONSerialization.jsonObject(with: data) as? [String: Bool],
-                      result["advertorial"] == true, result["editorial"] == true else {
+                      result["advertorial"] == true,
+                      result["editorial"] == true,
+                      result["felix"] == true,
+                      result["ngEditorial"] == true,
+                      result["ngNearMatch"] == true,
+                      result["subscriber"] == true,
+                      result["okauchan"] == true,
+                      result["ordinaryCurrent"] == true,
+                      result["hvgSponsored"] == true,
+                      result["hvgEditorial"] == true,
+                      result["hvgPartnerLabel"] == true,
+                      result["hvgBrandLab"] == true,
+                      result["hvgEditorialSidebar"] == true,
+                      result["allrecipesBanner"] == true,
+                      result["allrecipesOtherNotice"] == true,
+                      result["allrecipesNavigation"] == true,
+                      result["allrecipesSave"] == true else {
                     self.fail("24.hu selector fixture: \(String(describing: error))")
                     return
                 }
-                print("PASS: generated 24.hu advertorial selector compiles and hides only the tagged fixture row")
+                print("PASS: generated site selectors hide the observed adverts and preserve the negative fixtures")
                 exit(0)
             }
             return

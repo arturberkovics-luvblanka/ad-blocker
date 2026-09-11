@@ -1,25 +1,28 @@
 # Ad Blocker
 
 Nyílt forrású Safari reklámblokkoló macOS-re, közös iOS/iPadOS forrással.
-A **v0.0.1** az első nyilvános tesztkiadás, Apple Silicon Macre.
+A **v0.0.2 build 7** ad-hoc aláírású macOS teszt-előkiadás. A telepítés,
+csomagegyezés, beépített Safari-önteszt, duplikátummentes regisztráció, három
+célzott hibadomain és kontrollos YouTube-minta élő ellenőrzése sikeres.
 
-[**macOS telepítő letöltése**](https://github.com/arturberkovics-luvblanka/ad-blocker/releases/download/v0.0.1/AdBlocker-0.0.1-macOS-arm64.pkg) · [Kiadások](https://github.com/arturberkovics-luvblanka/ad-blocker/releases)
+[**macOS telepítő letöltése**](https://github.com/arturberkovics-luvblanka/ad-blocker/releases/download/v0.0.2/AdBlocker-0.0.2-build7-macOS-arm64.pkg) · [Kiadások](https://github.com/arturberkovics-luvblanka/ad-blocker/releases)
 
-> Ez a fejlesztői ág a még nem publikált v0.0.2 forrását tartalmazza. Ebben a
-> macOS host saját ablak nélkül végzi az első Safari-beállítást, a telepítő
-> pedig best-effort módon elindítja az aktív felhasználó környezetében. A
-> v0.0.2 helyi telepítése, háttérindítása és pozitív Safari-próbája ellenőrzött; a fenti letöltés ezért továbbra is a v0.0.1 kiadás.
+> Az első indítás vezetett beállítóablakot, a későbbi kézi megnyitás
+> állapotképernyőt, az app pedig beépített helyi működéspróbát ad. A telepített
+> build 7 mindkét Safari-réteggel teljesítette az öt ellenőrzést.
 
 ## Mit tartalmaz?
 
-- Natív Safari-szűrés: 97 505 szabály, AdGuard Base, Hufilter és célzott kiegészítések.
+- Natív Safari-szűrés: 97 507 szabály, AdGuard Base, Hufilter és célzott kiegészítések.
 - Külön Safari Web Extension a fejlett CSS- és scriptlet-szabályokhoz.
 - YouTube-szabályok és korai videóreklám-adatvédelem.
 - Popupblokkolás, működő oldalkivételek és a csomagolt lista automatikus betöltése.
 - Valódi rétegállapotok és helyi ellenőrző oldal.
 
-A felhasználó saját próbáiban jól működőnek találta ezt a verziót. Ez nem
-jelent minden weboldalra vagy YouTube-hirdetésre szóló garanciát.
+A build 7 élő mátrixa tíz webhelyet, öt célzott szűrőjavítást és három
+YouTube-videót vizsgált. A pontos eredmények és a nem tesztelt esetek:
+[élő validáció](code/docs/LIVE-VALIDATION.md). Az önteszt nem jelent minden
+weboldalra vagy YouTube-hirdetésre szóló garanciát.
 Automatikus sütielutasítás és internetes listafrissítés még nincs benne.
 iPhone/iPad forrás és buildcél van; készülékes kiadás még nincs.
 
@@ -27,12 +30,15 @@ iPhone/iPad forrás és buildcél van; készülékes kiadás még nincs.
 
 1. Töltsd le a `.pkg` fájlt a kiadásból, és nyisd meg a macOS Installerrel.
 2. A telepítő az `/Applications/Ad Blocker.app` helyre másolja az appot.
-3. Nyisd meg az appot, majd engedélyezd mindkét Ad Blocker-bővítményt
-   a Safari beállításaiban. A webes bővítménynek külön oldalengedély is kell.
+3. Az ad-hoc tesztkiadáshoz engedélyezd kézzel a Safari **Developer → Allow
+   unsigned extensions** kapcsolóját. Teljes Safari-kilépés után ezt újra meg
+   kellhet tenni.
+4. Nyisd meg az appot, majd engedélyezd mindkét Ad Blocker-bővítményt a Safari
+   beállításaiban. A webes bővítménynek külön oldalengedély is kell.
 
 **Aláírás:** ez a kiadás ad-hoc aláírású, nincs Developer ID-aláírás vagy
 Apple-notarizáció. A macOS és a Safari kézi jóváhagyást, illetve a Safari
-helyi, aláíratlan bővítményekhez tartozó fejlesztői engedélyét kérheti.
+helyi, aláíratlan bővítményekhez tartozó fejlesztői engedélyét kéri.
 A telepítő nem módosít biztonsági vagy böngészőengedélyeket.
 Részletes lépések: [Telepítés](code/docs/INSTALLER.md).
 

@@ -8,7 +8,7 @@
     "binarySHA256": "261c737bcf8392d6ebf427ae078f1cd29b7d2a9011a1ad502477170efad1bd59"
   },
   "inputs": {
-    "combinedSHA256": "1c5745fe3aef509ddeb724be4c303292f2fa6a1e4f9ec59a080c6879bfef6c63",
+    "combinedSHA256": "06acc6459c1db829b83d3479ff1b22af67036eaa4471a13164ef77cef6288654",
     "sources": [
       {
         "name": "AdGuard Base filter",
@@ -26,26 +26,26 @@
       },
       {
         "name": "Ad Blocker local supplementary rules",
-        "sha256": "757a320fdc3d49a5f12e5c0fee0c90b3aadf4770fbe1a2f0cad5ebade9f232ee"
+        "sha256": "2e3b300c557b69df75b8388acb9c744946ffbfb3fed834358aad6fd5a927f3f5"
       }
     ]
   },
   "safariVersion": 26,
   "conversion": {
-    "sourceRulesCount": 138529,
-    "sourceSafariCompatibleRulesCount": 128440,
+    "sourceRulesCount": 138534,
+    "sourceSafariCompatibleRulesCount": 128445,
     "safariRulesCount": 97504,
     "advancedRulesCount": 12077,
     "discardedSafariRules": 0,
     "errorsCount": 223,
-    "safariRulesJSONBytes": 13983002,
+    "safariRulesJSONBytes": 13983519,
     "advancedRulesTextBytes": 1455874
   },
   "projectSentinelRules": 3,
   "finalSafariRules": 97507,
   "outputs": {
-    "blockerListSHA256": "f283d774055c4a64d60ca8c5e2796b7805bdcaa15be837d0cd75e0d3d3c2e5c1",
-    "ruleMultisetSHA256": "ec6869474fa0b6386228759d95d28774faf6e1e54f97d353c5790fcad4f800a3",
+    "blockerListSHA256": "1b150ecfd69c3af111042b0f229589ea5d01aa395a87164bc53f9fb863917554",
+    "ruleMultisetSHA256": "9fb31e9bd9b25831bd6413c38fb2b8ca723ba7e32019d8d038e2c77ecc0a91ed",
     "advancedRulesSHA256": "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02",
     "unsupportedRulesSHA256": "e2779ac23f63bb52bcc04360fd97726eedf420d17d38e916275490ec0ca1e754"
   },
@@ -54,7 +54,7 @@
     "errorLogCountCheck": "passed",
     "webKitCompilation": {
       "status": "passed",
-      "testedOutputSHA256": "f283d774055c4a64d60ca8c5e2796b7805bdcaa15be837d0cd75e0d3d3c2e5c1",
+      "testedOutputSHA256": "1b150ecfd69c3af111042b0f229589ea5d01aa395a87164bc53f9fb863917554",
       "testedOn": "2026-09-11",
       "macOS": "27.0 (26A5425a)"
     }

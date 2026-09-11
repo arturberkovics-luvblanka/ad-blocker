@@ -15,7 +15,7 @@ bash code/scripts/package-macos.sh --local \
 A v0.0.2 alapértelmezett kimenete:
 
 ```text
-builds/macOS/AdBlocker-0.0.2-build5-macOS-arm64.pkg
+builds/macOS/AdBlocker-0.0.2-build7-macOS-arm64.pkg
 ```
 
 Második argumentummal külön kimeneti mappa adható meg. A script:
@@ -103,15 +103,17 @@ folyamat még nem készült el.
 
 ## Telepítés és Safari
 
-A v0.0.2 helyi teszttelepítő elkészült; GitHub-kiadásként még nincs
-közzétéve. A telepítés lépései:
+A v0.0.2 build 7 teszttelepítője elkészült és tényleges frissítő telepítésben
+sikeres volt. A teszt-előkiadás telepítési lépései:
 
-1. Nyisd meg az `AdBlocker-0.0.2-build5-macOS-arm64.pkg` fájlt, és telepítsd az
-   alkalmazást az `/Applications` mappába.
+1. Nyisd meg a kiadáshoz tartozó
+   `AdBlocker-0.0.2-build<CFBundleVersion>-macOS-arm64.pkg` fájlt, és telepítsd
+   az alkalmazást az `/Applications` mappába. A pontos fájlnevet és hash-t a
+   kiadási jegyzet rögzíti.
 2. A telepítő megkísérli az első megnyitást az aktív asztali felhasználónál.
    Az app egy rövid bevezetőben megmutatja a két védelmi réteget és a Safari
-   kötelező kézi engedélyeit. Ha ez az indítás nem sikerül, nyisd meg kézzel az
-   exact `/Applications/Ad Blocker.app` példányt.
+   kötelező kézi engedélyeit. Ha ez az indítás nem sikerül, nyisd meg kézzel a
+   pontos `/Applications/Ad Blocker.app` példányt.
 3. Ennél az ad-hoc tesztbuildnél előbb a Safari **Settings → Developer →
    Allow unsigned extensions** kapcsolóját kell kézzel engedélyezni. Ha a
    Developer lap hiányzik, az Advanced lapon engedélyezd a webfejlesztői
@@ -135,7 +137,11 @@ A diagnosztika kiírja a két Safari-réteg állapotát és a legutóbbi
 háttérbeállítás eredményét; nem kapcsol be bővítményt és nem ad
 webhelyengedélyt.
 
-A Release build, a csomag szerkezeti ellenőrzése és a korábbi postinstall 4/4
-unit tesztje sikeres. Az élő unsigned-OFF próba nulla saját ablakkal és őszinte
-hibaállapottal lezárult. A valódi `.pkg` telepítés és a felhasználói háttérindítás sikeres;
-a build 4 pozitív helyi Safari-próbája kézi engedélyek után sikeres.
+A build 7 valódi macOS Installer-frissítése sikeres. A receipt `0.0.2.7`, a
+telepített app `verify_macos.py` ellenőrzése sikeres, és a telepített app
+bájtszinten egyezik a Release termékkel. Mindkét Safari-réteg ON, az új
+ötellenőrzéses onboarding-önteszt sikeres. A véges webhelymátrix, a kontrollos
+YouTube-próba és a duplikátummentes extensionregisztráció ellenőrzése is
+lezárult. Developer ID és
+notarizálás nélkül ez csak ad-hoc aláírású teszt-előkiadás lehet. Részletek:
+[LIVE-VALIDATION.md](LIVE-VALIDATION.md).

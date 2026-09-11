@@ -9,15 +9,20 @@ bash code/scripts/build.sh macOS Release
 ```
 
 A build kiírja a ZIP helyét; a köztes app a rendszer ideiglenes
-`adblocker-$(id -u)/DerivedData-macOS/Build/Products/Release/Ad Blocker.app`
+`adblocker-$(id -u)/DerivedData-macOS-local/Build/Products/Release/Ad Blocker.app`
 könyvtárában van. A `.pkg` készítése:
 
 ```sh
 bash code/scripts/package-macos.sh --local "/pontos/út/Ad Blocker.app"
 ```
 
-A fenti útvonal csak helyi, ad-hoc tesztcsomagot készít. A v0.0.2 build 5
-alapértelmezett neve `builds/macOS/AdBlocker-0.0.2-build5-macOS-arm64.pkg`.
+A DerivedData app és a benne levő Safari extensionök csak fordítási termékek,
+nem telepítési példányok. A sikeres helyi macOS build ezért kizárólag a saját
+két DerivedData extensionjének PlugInKit-regisztrációját távolítja el; az
+`/Applications/Ad Blocker.app` példányhoz nem nyúl.
+
+A fenti útvonal csak helyi, ad-hoc tesztcsomagot készít. A jelenlegi v0.0.2
+build 7 neve `builds/macOS/AdBlocker-0.0.2-build7-macOS-arm64.pkg`.
 A csomagoló a két engedélyezett installer scriptet is kibontja és ellenőrzi.
 A regressziók külön futnak:
 
@@ -25,9 +30,10 @@ A regressziók külön futnak:
 python3 code/tests/installer_postinstall_test.py
 ```
 
-A kiadás forrása tiszta checkoutból, általános `/private/tmp` buildútvonalon
-fordult. A publikus binárisokban nincs a fejlesztő saját home-mappájára
-mutató forrásútvonal. Developer ID hiányában a macOS app ad-hoc aláírású.
+A kiadási jelöltet tiszta checkoutból, általános `/private/tmp`
+buildútvonalon kell fordítani. A publikus binárisokban nem maradhat a
+fejlesztő saját home-mappájára mutató forrásútvonal. Developer ID hiányában a
+macOS app ad-hoc aláírású, és csak teszt-előkiadásként jelölhető.
 
 ## Közvetlen terjesztési build
 
@@ -48,10 +54,10 @@ Developer ID Installer-aláírást, notarizálást, staplinget és a kész csoma
 független ellenőrzését végzi. A kiadási útvonal nem esik vissza helyi/ad-hoc
 aláírásra.
 
-A v0.0.2 Release build, a package strukturális ellenőrzése és a korábbi
-postinstall 4/4 unit tesztje sikeres. A build 2 valódi `.pkg` telepítése és a postinstall
-felhasználói háttérindítása sikeres. A build 3 a késleltetett Safari-felismerést
-javítja; a build 4 pozitív helyi Safari-próbája kézi engedélyek után sikeres.
+A build 7 Release fordítása, csomagellenőrzése és valódi build 5 → build 7
+Installer-frissítése sikeres. A telepített app bájtszinten egyezik a Release
+termékkel, és az ötellenőrzéses onboarding-önteszt sikeres. A még nyitott élő
+mátrix: [LIVE-VALIDATION.md](LIVE-VALIDATION.md).
 
 ## Natív konverter
 

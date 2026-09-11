@@ -100,10 +100,16 @@ A kiadást a `9a62d00504244bcbab1051e49acd5240997332a6` forrás commit állítot
 Forrás: https://raw.githubusercontent.com/hufilter/hufilter/1832f017a963e4b96183e7865670a5cdd91ce263/hufilter-adguard.txt . A Hufilter CC BY 4.0 licencű;
 a teljes szöveg a `filters/LICENSE-Hufilter-CC-BY-4.0.txt` fájlban van.
 
-A `filters/local-rules.txt` saját, hash-elt kiegészítés. Egyik szabálya a 24.hu
-megfigyelt, `m-articleWidget__tag`-gel jelölt reklámsorának teljes `.pr-row`
-konténerét rejti; a hasonló, címke nélküli szerkesztői sor a tesztben látható
-marad. Ez a szabály Safari-natív CSS-szabállyá alakul.
+A `filters/local-rules.txt` saját, hash-elt kiegészítés. A 24.hu szabályai a
+megfigyelt, `m-articleWidget__tag`-gel jelölt reklámsort, valamint a 2026-09-11-i
+FELIX- és OkAuchan-kampány pontos URL-jű kártyáját rejtik. Az utóbbi kettőt nem
+általánosítjuk minden hasonló URL-re vagy jövőbeli kampányra. A hvg.hu szabálya
+a related-widget külön reklámjelölős kártyáját rejti úgy, hogy a címke nélküli
+szerkesztői és az eltérő partnercímkés ajánló megmarad; külön szabály rejti a
+saját `.sidebar-brandlab` reklámblokkot. Ezek Safari-natív CSS-szabállyá
+alakulnak. Az Allrecipes helyi szabálya kizárólag a megfigyelt, site-wide
+MyRecipes app-kampány bannergyökerét rejti; a normál „Get the app” navigációt
+és a receptmentés vezérlőit nem célozza.
 
 ## Konverziós eredmény
 
@@ -112,10 +118,21 @@ szabályt és 223 nyilvántartott konverziós hibát tartalmaz. A pontos forrás
 konverter- és kimeneti hash-ek a `filters/generated/conversion-report.json`
 fájlban vannak. A fejlett szabályokhoz a Web Extension és oldalengedély kell.
 
+A v0.0.2 teszt-előkiadási jelölt 97 507 natív szabályt, köztük három
+projekt-sentinelt, valamint 12 077 fejlett szabályt és ugyanazt a 223
+nyilvántartott konverziós hibát tartalmazza. A kiadási taghoz mindig a benne
+levő `conversion-report.json` pontos hash-ei tartoznak.
+
+Az öt új 24.hu/hvg.hu/Allrecipes kozmetikai szelektor a forrás- és a
+Safari-kompatibilis szabályok számát öttel növeli. A konverter ezeket a három
+domain már létező kozmetikai JSON-objektumába vonja össze, ezért a végleges
+97 507-es JSON-objektumszám és a 12 077-es fejlett darabszám nem változik.
+
 A konverter helyi popup-javítása megtartja a dokumentumtiltást, és hozzáadja
 a Safari popup erőforrástípust; kevert típusoknál külön kezeli a child-frame
-ágaikat. A saját listában 24.hu kozmetikai javítás, a media.net támogatott
-script/XHR-része és három ekvivalens IP-popup regexprojekció is szerepel.
+ágaikat. A saját listában célzott 24.hu, hvg.hu és Allrecipes kozmetikai
+javítások, a media.net támogatott script/XHR-része és három ekvivalens
+IP-popup regexprojekció is szerepel.
 
 A bináris konvertereket forrásból kell újraépíteni. A build és az explicit
 helyi binárisokat használó konverzió: [BUILDING.md](BUILDING.md). A lista
