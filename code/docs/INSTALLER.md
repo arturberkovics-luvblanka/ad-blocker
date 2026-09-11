@@ -8,14 +8,14 @@ szabványos macOS component package fájlt készít. A verziót az
 az alkalmazás `CFBundleShortVersionString` értékével.
 
 ```bash
-bash code/scripts/package-macos.sh \
+bash code/scripts/package-macos.sh --local \
   "/teljes/útvonal/Ad Blocker.app"
 ```
 
 A v0.0.2 alapértelmezett kimenete:
 
 ```text
-builds/macOS/AdBlocker-0.0.2-macOS-arm64.pkg
+builds/macOS/AdBlocker-0.0.2-build5-macOS-arm64.pkg
 ```
 
 Második argumentummal külön kimeneti mappa adható meg. A script:
@@ -25,10 +25,11 @@ Második argumentummal külön kimeneti mappa adható meg. A script:
 - staging payload root alatt pontosan az `Applications/Ad Blocker.app`
   útvonalat készíti elő;
 - a natív `pkgbuild --root` és `--component-plist` útvonalat használja;
-- minden bundle-nél kikapcsolja a relocation- és verzióellenőrzést,
-  bekapcsolja a szigorú bundle identifier ellenőrzést, és teljes
-  bundle-cserét kér;
-- pontosan egy, végrehajtható `postinstall` scriptet csomagol be;
+- szigorú bundle identifier ellenőrzést és teljes bundle-cserét kér;
+- pontosan egy `preinstall` és egy `postinstall` scriptet csomagol be;
+- a preinstall az eredeti `/Applications/Ad Blocker.app` azonosítóját és
+  `CFBundleVersion` értékét még payloadcsere előtt ellenőrzi: azonos build
+  újratelepíthető, de magasabb telepített buildre nem enged visszalépést;
 - `pkgutil --expand-full` segítségével ellenőrzi a metadata-, script- és
   payload-adatokat, köztük a postinstall forrással való bytepontos egyezését;
 - elutasítja a kibontás után megmaradó AppleDouble vagy `.DS_Store`
@@ -40,6 +41,33 @@ Második argumentummal külön kimeneti mappa adható meg. A script:
 Meglévő, azonos nevű csomagot a script nem ír felül. Az Installer mindig az
 `/Applications/Ad Blocker.app` útvonalra telepít, és nem helyezi át a korábbi
 `~/Applications` fejlesztői példányt.
+
+## Developer ID-s kiadási csomag
+
+A `--distribution` útvonal nem használ ad-hoc helyettesítést. Előbb a
+`build.sh macOS Release --distribution` paranccsal, majd a megfelelő Keychain
+profil beállítása után készíthető csomag:
+
+```bash
+export ADBLOCKER_DEVELOPMENT_TEAM=ABCDEFGHIJ
+export 'ADBLOCKER_DEVELOPER_ID_APPLICATION=Developer ID Application: Your Name (ABCDEFGHIJ)'
+export 'ADBLOCKER_DEVELOPER_ID_INSTALLER=Developer ID Installer: Your Name (ABCDEFGHIJ)'
+export ADBLOCKER_NOTARY_PROFILE=adblocker-notary
+bash code/scripts/package-macos.sh --distribution "/teljes/útvonal/Ad Blocker.app"
+```
+
+A profil csak a `notarytool store-credentials` által a Keychainbe mentett név;
+jelszó, API-kulcs vagy provisioning-fájl nem kerül a repóba, a parancssorba
+vagy a buildnaplóba. A kiadási csomagoló meghiúsul, ha bármelyik Developer ID
+identity hiányzik, az app Team ID-ja eltér, a notarizálás nem `Accepted`, a
+staple érvénytelen, vagy az exact kész `.pkg` Gatekeeper-ellenőrzése sikertelen.
+Az exact artefaktum külön is vizsgálható:
+
+```bash
+bash code/scripts/verify-distribution-pkg.sh /út/AdBlocker.pkg ABCDEFGHIJ \
+  'Developer ID Application: Your Name (ABCDEFGHIJ)' \
+  'Developer ID Installer: Your Name (ABCDEFGHIJ)'
+```
 
 ## Mit végez a postinstall?
 
@@ -59,9 +87,9 @@ be Safari-bővítményt, nem ad webhelyengedélyt, nem telepít tartós háttér
 
 ## Jelenlegi aláírási korlát
 
-A v0.0.2 helyi Release buildje ad-hoc aláírású. A `package-macos.sh` nem
-választ ki és nem talál ki tanúsítványt. Az elkészült `.pkg` nincs Developer
-ID Installer tanúsítvánnyal aláírva és nincs Apple által notarizálva.
+A v0.0.2 helyi Release buildje ad-hoc aláírású. A `package-macos.sh --local`
+nem választ ki és nem talál ki tanúsítványt. Az elkészült `.pkg` nincs
+Developer ID Installer tanúsítvánnyal aláírva és nincs Apple által notarizálva.
 
 A macOS azonosítatlan fejlesztőre figyelmeztethet vagy blokkolhatja a
 megnyitást. Ha a rendszer felajánlja, a felhasználó a
@@ -78,11 +106,12 @@ folyamat még nem készült el.
 A v0.0.2 helyi teszttelepítő elkészült; GitHub-kiadásként még nincs
 közzétéve. A telepítés lépései:
 
-1. Nyisd meg az `AdBlocker-0.0.2-macOS-arm64.pkg` fájlt, és telepítsd az
+1. Nyisd meg az `AdBlocker-0.0.2-build5-macOS-arm64.pkg` fájlt, és telepítsd az
    alkalmazást az `/Applications` mappába.
-2. A telepítő megkísérli a háttér-host egyszeri indítását. Az appnak nincs
-   saját ablaka; szükség esetén megpróbálja megnyitni a Safari Extensions
-   beállítást. Ha a Safari még nem ismeri az extensiont, ez is sikertelen lehet.
+2. A telepítő megkísérli az első megnyitást az aktív asztali felhasználónál.
+   Az app egy rövid bevezetőben megmutatja a két védelmi réteget és a Safari
+   kötelező kézi engedélyeit. Ha ez az indítás nem sikerül, nyisd meg kézzel az
+   exact `/Applications/Ad Blocker.app` példányt.
 3. Ennél az ad-hoc tesztbuildnél előbb a Safari **Settings → Developer →
    Allow unsigned extensions** kapcsolóját kell kézzel engedélyezni. Ha a
    Developer lap hiányzik, az Advanced lapon engedélyezd a webfejlesztői
@@ -93,9 +122,8 @@ közzétéve. A telepítés lépései:
    **Ad Blocker – Oldalellenőrzés** bővítményt.
 5. A webes bővítménynek kézzel add meg a szükséges webhely-hozzáférést, majd
    töltsd újra a már nyitott oldalakat.
-6. Ha a háttérindítás elmaradt, nyisd meg egyszer kézzel az
-   `/Applications/Ad Blocker.app` alkalmazást. Saját ablak helyett ugyanazt a
-   háttérbeállítást futtatja.
+6. A sikeres első beállítás után az app a csomagfrissítések miatti automatikus
+   indításkor csendes maradhat, de kézzel bármikor megnyitható az állapothoz.
 
 Az aktuális állapot helyi ellenőrzése:
 
@@ -107,7 +135,7 @@ A diagnosztika kiírja a két Safari-réteg állapotát és a legutóbbi
 háttérbeállítás eredményét; nem kapcsol be bővítményt és nem ad
 webhelyengedélyt.
 
-A Release build, a csomag szerkezeti ellenőrzése és a postinstall 4/4 unit
-tesztje sikeres. Az élő unsigned-OFF próba nulla saját ablakkal és őszinte
+A Release build, a csomag szerkezeti ellenőrzése és a korábbi postinstall 4/4
+unit tesztje sikeres. Az élő unsigned-OFF próba nulla saját ablakkal és őszinte
 hibaállapottal lezárult. A valódi `.pkg` telepítés és a felhasználói háttérindítás sikeres;
 a build 4 pozitív helyi Safari-próbája kézi engedélyek után sikeres.

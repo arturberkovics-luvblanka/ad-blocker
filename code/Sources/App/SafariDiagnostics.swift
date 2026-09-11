@@ -26,6 +26,14 @@ func runSafariDiagnostics(reload: Bool) async -> Bool {
     output["lastBackgroundSetup"] = UserDefaults.standard.dictionary(forKey: "lastBackgroundSetup") as Any? ?? NSNull()
     output["appPath"] = Bundle.main.bundlePath
     output["appVersion"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
+    output["appBuild"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion")
+    if let evidence = OnboardingStore(defaults: .standard).evidence,
+       let data = try? JSONEncoder().encode(evidence),
+       let record = try? JSONSerialization.jsonObject(with: data) {
+        output["lastVerifiedOnboarding"] = record
+    } else {
+        output["lastVerifiedOnboarding"] = NSNull()
+    }
     #endif
     if reload {
         let result: String? = await safariRequest(timeout: .seconds(60)) { done in

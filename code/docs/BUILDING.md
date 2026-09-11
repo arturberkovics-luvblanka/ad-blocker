@@ -13,24 +13,43 @@ A build kiírja a ZIP helyét; a köztes app a rendszer ideiglenes
 könyvtárában van. A `.pkg` készítése:
 
 ```sh
-bash code/scripts/package-macos.sh "/pontos/út/Ad Blocker.app"
+bash code/scripts/package-macos.sh --local "/pontos/út/Ad Blocker.app"
 ```
 
-A v0.0.2 csomag alapértelmezett neve
-`builds/macOS/AdBlocker-0.0.2-macOS-arm64.pkg`. A csomagoló az app mellett az
-egyetlen engedélyezett `installer/postinstall` scriptet is kibontja és
-bytepontosan ellenőrzi. A postinstall regressziói külön futnak:
+A fenti útvonal csak helyi, ad-hoc tesztcsomagot készít. A v0.0.2 build 5
+alapértelmezett neve `builds/macOS/AdBlocker-0.0.2-build5-macOS-arm64.pkg`.
+A csomagoló a két engedélyezett installer scriptet is kibontja és ellenőrzi.
+A regressziók külön futnak:
 
 ```sh
-python3 -m unittest code/tests/installer_postinstall_test.py
+python3 code/tests/installer_postinstall_test.py
 ```
 
 A kiadás forrása tiszta checkoutból, általános `/private/tmp` buildútvonalon
 fordult. A publikus binárisokban nincs a fejlesztő saját home-mappájára
 mutató forrásútvonal. Developer ID hiányában a macOS app ad-hoc aláírású.
 
-A v0.0.2 Release build, a package strukturális ellenőrzése és a postinstall
-4/4 unit tesztje sikeres. A build 2 valódi `.pkg` telepítése és a postinstall
+## Közvetlen terjesztési build
+
+Ezt csak fizetős Apple Developer Program-tagsághoz tartozó Developer ID
+Application és Developer ID Installer identitykkel szabad futtatni. A sima,
+ingyenes Apple Accounttal elérhető beta/Xcode-letöltés nem hoz létre ilyen
+identityt. A script előbb ellenőrzi a Keychaint és sikertelen előfeltételnél
+nem készít félrevezetően kiadhatónak jelölt artefaktumot.
+
+```sh
+export ADBLOCKER_DEVELOPMENT_TEAM=ABCDEFGHIJ
+export 'ADBLOCKER_DEVELOPER_ID_APPLICATION=Developer ID Application: Your Name (ABCDEFGHIJ)'
+bash code/scripts/build.sh macOS Release --distribution
+```
+
+Ezután a [INSTALLER.md](INSTALLER.md) szerinti `package-macos.sh --distribution`
+Developer ID Installer-aláírást, notarizálást, staplinget és a kész csomag
+független ellenőrzését végzi. A kiadási útvonal nem esik vissza helyi/ad-hoc
+aláírásra.
+
+A v0.0.2 Release build, a package strukturális ellenőrzése és a korábbi
+postinstall 4/4 unit tesztje sikeres. A build 2 valódi `.pkg` telepítése és a postinstall
 felhasználói háttérindítása sikeres. A build 3 a késleltetett Safari-felismerést
 javítja; a build 4 pozitív helyi Safari-próbája kézi engedélyek után sikeres.
 

@@ -33,18 +33,24 @@ def phase(key, isa, references):
     return add(key, isa, buildActionMask=2147483647, files=files, runOnlyForDeploymentPostprocessing=0)
 
 
-def configs(key, settings):
+def configs(key, settings, base_configuration=None):
     refs = []
     for name in ("Debug", "Release"):
         values = dict(settings, SWIFT_OPTIMIZATION_LEVEL="-Onone" if name == "Debug" else "-O")
         values["ONLY_ACTIVE_ARCH"] = "YES" if name == "Debug" else "NO"
-        refs.append(add(key + name, "XCBuildConfiguration", name=name, buildSettings=values))
+        configuration = {"name": name, "buildSettings": values}
+        if base_configuration is not None:
+            configuration["baseConfigurationReference"] = base_configuration
+        refs.append(add(key + name, "XCBuildConfiguration", **configuration))
     return add(key + "Configs", "XCConfigurationList", buildConfigurations=refs,
                defaultConfigurationIsVisible=0, defaultConfigurationName="Debug")
 
 
+app_source_paths = sorted((ROOT / "Sources/App").glob("*.swift"))
+if not app_source_paths:
+    raise SystemExit("No app Swift sources were found in Sources/App.")
+app_sources = [reference(str(path.relative_to(ROOT)), "sourcecode.swift") for path in app_source_paths]
 sources = {
-    "App": reference("Sources/App/AdBlockerApp.swift", "sourcecode.swift"),
     "ContentBlocker": reference("Sources/ContentBlocker/ContentBlockerRequestHandler.swift", "sourcecode.swift"),
     "WebExtension": reference("Sources/WebExtension/SafariWebExtensionHandler.swift", "sourcecode.swift"),
 }
@@ -53,9 +59,9 @@ request_source = reference("Sources/App/SafariRequest.swift", "sourcecode.swift"
 diagnostics_source = reference("Sources/App/SafariDiagnostics.swift", "sourcecode.swift")
 activation_source = reference("Sources/App/NativeRuleActivation.swift", "sourcecode.swift")
 bundle_source = reference("Sources/App/NativeRuleBundle.swift", "sourcecode.swift")
-background_source = reference("Sources/App/MacBackgroundApp.swift", "sourcecode.swift")
 advanced_source = reference("Sources/WebExtension/AdvancedRuleStore.swift", "sourcecode.swift")
 advanced_rules = reference("filters/generated/adguard-base-advanced.txt", "text")
+runtime_build_manifest = reference("extension-runtime/build-manifest.json", "text.json")
 engine_package = add("EnginePackage", "XCLocalSwiftPackageReference", relativePath="vendor/SafariConverterLib")
 webfiles = [reference(str(p.relative_to(ROOT)), "text.json" if p.suffix == ".json" else "text")
             for p in sorted((ROOT / "extension").iterdir()) if p.is_file()]
@@ -63,6 +69,12 @@ app_resources = [reference("../LICENSE", "text"), reference("vendor/licenses", "
                  reference("filters/LICENSE-Hufilter-CC-BY-4.0.txt", "text"),
                  reference("Resources/THIRD_PARTY_NOTICES.md", "text"),
                  reference("filters/generated/conversion-report.json", "text.json")]
+self_test_resources = [
+    reference(str(path.relative_to(ROOT)), "text.json" if path.suffix == ".json" else "text")
+    for path in sorted((ROOT / "Resources/SelfTest").rglob("*"))
+    if path.is_file()
+]
+macos_signing_config = reference("Configuration/macOS-Signing.xcconfig", "text.xcconfig")
 products, targets, schemes = [], [], []
 project_id = hashlib.sha256(b"Project").hexdigest()[:24].upper()
 
@@ -83,7 +95,7 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
                 "App": "Ad Blocker", "ContentBlocker": "Ad Blocker – Szűrőlista",
                 "WebExtension": "Ad Blocker – Oldalellenőrzés"}[kind],
             "CFBundlePackageType": "APPL" if kind == "App" else "XPC!",
-            "CFBundleShortVersionString": VERSION, "CFBundleVersion": "4",
+            "CFBundleShortVersionString": VERSION, "CFBundleVersion": "5",
         }
         if kind != "App":
             info["NSExtension"] = {
@@ -102,19 +114,24 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
             info["UISupportedInterfaceOrientations~ipad"] = ["UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown", "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"]
         plist(info_path, info)
         entitlements_path = f"Configuration/{platform}-{kind}.entitlements"
-        plist(entitlements_path, {"com.apple.security.app-sandbox": True} if platform == "macOS" else {})
+        entitlements = {"com.apple.security.app-sandbox": True} if platform == "macOS" else {}
+        if platform == "macOS" and kind == "App":
+            # The host serves only the bundled loopback self-test fixture.
+            entitlements["com.apple.security.network.server"] = True
+        plist(entitlements_path, entitlements)
         settings = {
             "PRODUCT_NAME": product_name, "PRODUCT_BUNDLE_IDENTIFIER": bundle,
             "SWIFT_VERSION": "5.0", "SDKROOT": sdk,
             "INFOPLIST_FILE": info_path, "GENERATE_INFOPLIST_FILE": "NO",
-            "CODE_SIGN_ENTITLEMENTS": entitlements_path, "CODE_SIGN_STYLE": "Automatic",
-            "CODE_SIGN_IDENTITY": "-" if platform == "macOS" else "Apple Development",
+            "CODE_SIGN_ENTITLEMENTS": entitlements_path,
+            "CODE_SIGN_STYLE": "Manual" if platform == "macOS" else "Automatic",
             "ENABLE_HARDENED_RUNTIME": "YES", "CLANG_ENABLE_MODULES": "YES",
             "LD_RUNPATH_SEARCH_PATHS": ["$(inherited)", "@executable_path/../Frameworks"] if platform == "macOS" else ["$(inherited)", "@executable_path/Frameworks"],
             "MACOSX_DEPLOYMENT_TARGET" if platform == "macOS" else "IPHONEOS_DEPLOYMENT_TARGET": minimum,
             "SKIP_INSTALL": "NO" if kind == "App" else "YES",
         }
         if platform == "iOS":
+            settings["CODE_SIGN_IDENTITY"] = "Apple Development"
             settings["TARGETED_DEVICE_FAMILY"] = "1,2"
             settings["SUPPORTS_MACCATALYST"] = "NO"
         if kind != "App":
@@ -124,8 +141,18 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
             settings["OTHER_LDFLAGS"] = ["$(inherited)", "-framework", "Cocoa" if platform == "macOS" else "UIKit"]
         product = add(name + "Product", "PBXFileReference", explicitFileType="wrapper.application" if kind == "App" else "wrapper.app-extension", path=product_name + suffix, sourceTree="BUILT_PRODUCTS_DIR", includeInIndex=0)
         products.append(product)
-        resources = [rules] if kind == "ContentBlocker" else webfiles + [advanced_rules] if kind == "WebExtension" else app_resources
-        target_sources = [sources[kind], request_source, diagnostics_source, activation_source, bundle_source, background_source] if kind == "App" else [sources[kind], advanced_source] if kind == "WebExtension" else [sources[kind]]
+        if kind == "ContentBlocker":
+            resources = [rules]
+            target_sources = [sources[kind]]
+        elif kind == "WebExtension":
+            resources = webfiles + [advanced_rules]
+            target_sources = [sources[kind], advanced_source]
+        else:
+            # App sources are discovered so an onboarding addition cannot be
+            # silently omitted by the generated project. The loopback fixture
+            # is intentionally bundled only in the macOS host.
+            resources = app_resources + ([runtime_build_manifest] + self_test_resources if platform == "macOS" else [])
+            target_sources = app_sources
         phases = [phase(name + "Sources", "PBXSourcesBuildPhase", target_sources),
                   phase(name + "Resources", "PBXResourcesBuildPhase", resources),
                   phase(name + "Frameworks", "PBXFrameworksBuildPhase", [])]
@@ -144,14 +171,14 @@ for platform, sdk, minimum in (("macOS", "macosx", "14.0"), ("iOS", "iphoneos", 
             phases.append(add(name + "EmbedExtensions", "PBXCopyFilesBuildPhase", buildActionMask=2147483647, dstPath="", dstSubfolderSpec=13, files=embedded, name="Embed App Extensions", runOnlyForDeploymentPostprocessing=0))
         target = add(name, "PBXNativeTarget", name=name, productName=product_name,
                      productReference=product, productType="com.apple.product-type.application" if kind == "App" else "com.apple.product-type.app-extension",
-                     buildConfigurationList=configs(name, settings), buildPhases=phases, buildRules=[], dependencies=dependencies, packageProductDependencies=package_products)
+                     buildConfigurationList=configs(name, settings, macos_signing_config if platform == "macOS" else None), buildPhases=phases, buildRules=[], dependencies=dependencies, packageProductDependencies=package_products)
         targets.append(target)
         platform_targets[kind] = (target, product)
         if kind == "App":
             schemes.append((name, target, product_name + suffix))
 
 product_group = add("Products", "PBXGroup", children=products, name="Products", sourceTree="<group>")
-main_group = add("MainGroup", "PBXGroup", children=list(sources.values()) + [request_source, diagnostics_source, activation_source, bundle_source, background_source, advanced_source, advanced_rules, rules] + webfiles + app_resources + [product_group], sourceTree="<group>")
+main_group = add("MainGroup", "PBXGroup", children=app_sources + list(sources.values()) + [advanced_source, advanced_rules, rules, runtime_build_manifest, macos_signing_config] + webfiles + app_resources + self_test_resources + [product_group], sourceTree="<group>")
 add("Project", "PBXProject", attributes={"LastUpgradeCheck": "2700", "BuildIndependentTargetsInParallel": "YES"},
     buildConfigurationList=configs("Project", {"CLANG_ENABLE_MODULES": "YES"}), compatibilityVersion="Xcode 14.0",
     developmentRegion="hu", hasScannedForEncodings=0, knownRegions=["hu", "en", "Base"],

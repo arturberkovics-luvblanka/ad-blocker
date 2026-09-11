@@ -1,5 +1,43 @@
 # v0.0.2 forrásellenőrzések
 
+## Build 5 — onboarding és helyi önellenőrzés, 2026-09-11
+
+Az új forrásból a macOS Release build sikeres (0.0.2/build 5, arm64), a
+csomagolt erőforrások és a két bővítmény ellenőrzése sikeres. A személyes
+forrásútvonalakat mindhárom executable-ből ellenőrizetten eltávolítja a
+Swift prefix mapping. Az iOS Release regressziós build is sikeres, aláírás
+nélkül; nem készülékteszt.
+
+- 44/44 JavaScript-teszt, köztük az időtúllépésből hamis blokkolási sikert
+  kizáró két oldalteszt.
+- OnboardingState: 5 célzott teszteset. Megszakítás/folytatás, kapcsolóállapot
+  önmagában nem kész, hiányzó/visszavont engedély, korábbi és hibás mentés.
+- NativeRuleActivation: 4 tesztcsoport; párhuzamos kérés, generációcsere,
+  sikertelen/időtúllépő reload és explicit újrapróbálás.
+- ProtectionSelfTestHarness: korai megszakítás, kéréskorlát, fix útvonal,
+  pozitív kontrollok, hibás jelentés, késői blokkolandó kérés, elavult runtime,
+  egyező generáció és szabályos befejezés/leállítás.
+- 97 507 szabály teljes WebKit-fordítása és kontrollos natív működése;
+  a helyi szabályok deltaként +2 natív és +1 fejlett szabályt adtak, korábbi
+  szabály eltávolítása nélkül.
+- A fejlett localhost-szabály tényleges FilterEngine-lekérése és a pontos
+  `:has-text` hatás WebKitben, normál és szigorú CSP mellett sikeres.
+- Telepítő regresszió: 5/5. A csomagolás a két installer scriptet, a pontos
+  telepítési útvonalat és a kibontott payloadot ellenőrzi.
+- `PYTHONOPTIMIZE=1` mellett is elutasítja a verifier az eltérő csomagtartalmat.
+- Az első két képernyő külön UI-előnézetben vizuálisan és CUA-val ellenőrizve.
+  Ez nem a telepített új app vagy a Safari végponttól végpontig tartó próbája.
+
+**Még nincs teljesítve:** build 5 valódi pkg-telepítése, az új onboarding
+pozitív Safari-próbája, azonos verzió újratelepítése és aláírt A→B frissítése,
+profil/privát/engedély-visszavonási UI-mátrix, 5 Safari- és 3 gépújraindítás,
+valódi hibából helyreállítás. Nincs Developer ID vagy notarizálás.
+
+A helyi csomag: `../../builds/releases/v0.0.2/build5/AdBlocker-0.0.2-build5-macOS-arm64.pkg`.
+SHA-256: `aa5824a47fa076a1c23bac6b03d64d1647d096fc0fe281a3b384361b35ad925a`.
+A telepítési kísérlet rendszergazdai hitelesítést kér; addig a /Applications
+példány továbbra build 4. Az alábbi build 4 bejegyzések történetiek.
+
 A GitHubon jelenleg közzétett kiadás a v0.0.1. A helyi munkapéldány v0.0.2
 onboardingja helyben elkészült, de még nincs publikálva. A natív szabálylista
 változatlan: 97 505 szabály, SHA-256
@@ -61,7 +99,7 @@ notarizált, felügyelet nélküli telepítésre vonatkozó igazolás.
 
 ```sh
 node --test code/tests/*.test.mjs
-python3 -m unittest code/tests/installer_postinstall_test.py
+python3 code/tests/installer_postinstall_test.py
 bash code/scripts/test-native-rule-activation.sh
 bash code/scripts/test-advanced-native.sh
 # Külön terminálban:

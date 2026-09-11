@@ -1,0 +1,16 @@
+:root { color-scheme: light dark; font: 16px/1.55 system-ui, sans-serif; }
+body { margin: 0; background: #f4f7f6; color: #172321; }
+main { box-sizing: border-box; max-width: 680px; margin: 8vh auto; padding: 36px; background: white; border: 1px solid #d8e3e0; border-radius: 22px; }
+h1 { margin: 4px 0 12px; line-height: 1.15; }
+.eyebrow, .fine-print { color: #61716d; font-size: .82rem; letter-spacing: .04em; }
+#checks { margin: 28px 0; padding: 22px 22px 22px 46px; background: #edf5f3; border-radius: 14px; }
+#checks li { margin: 8px 0; }
+#checks .pass { color: #08764f; }
+#checks .fail { color: #a42d24; }
+.adblocker-self-test-native, .adblocker-self-test-advanced { padding: 12px; margin: 10px 0; border: 1px dashed #d8584c; }
+button { font: inherit; padding: 9px 14px; }
+@media (prefers-color-scheme: dark) {
+  body { background: #101715; color: #e6efec; }
+  main { background: #18211f; border-color: #31403c; }
+  #checks { background: #202e2a; }
+}

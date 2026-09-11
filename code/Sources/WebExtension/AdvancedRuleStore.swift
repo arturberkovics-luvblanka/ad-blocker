@@ -4,7 +4,7 @@ import FilterEngine
 
 /// Serialized by the handler queue. It never sends or persists browsing URLs.
 final class AdvancedRuleStore {
-    static let generation = "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c"
+    static let generation = "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02"
     private let rulesURL: URL
     private let cacheURL: URL
     private var engine: WebExtension?

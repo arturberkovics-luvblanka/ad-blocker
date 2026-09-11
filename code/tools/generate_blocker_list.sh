@@ -17,10 +17,10 @@ report="$generated_dir/conversion-report.json"
 
 expected_base_input_sha="f55c87d2a6c08149f306fe62a8a3f42b5edc0663c897a3ae25a8d7c6a794fb4e"
 expected_hufilter_input_sha="211b63f31366a3e70bca1cb764356628eefa62be08a896ee4165f856c652df1b"
-expected_local_input_sha="debbfc47347a2e97279a330f04a37619796562aa3a232f6157680110d03d48ff"
+expected_local_input_sha="757a320fdc3d49a5f12e5c0fee0c90b3aadf4770fbe1a2f0cad5ebade9f232ee"
 expected_converter_sha="261c737bcf8392d6ebf427ae078f1cd29b7d2a9011a1ad502477170efad1bd59"
 expected_debug_sha="9596017dcbad2d60cd52093340dd879b27c3e616f9ecded080231a6771a0b5e2"
-expected_rule_set_sha="a6b592c6686ffd3d1e8c1f1147189b0fc3217c18b4e0c5921fa9a6077de34d79"
+expected_rule_set_sha="ec6869474fa0b6386228759d95d28774faf6e1e54f97d353c5790fcad4f800a3"
 safari_version="26"
 
 for command in jq rg shasum; do
@@ -129,6 +129,13 @@ jq -S -c '. + [
         "type": "css-display-none",
         "selector": "#fixture-ad-box"
       }
+    },
+    {
+      "trigger": {
+        "url-filter": "^http://127\\.0\\.0\\.1:[0-9]+/adblocker-self-test-blocked\\.svg[?]session=[0-9a-f]+$",
+        "resource-type": ["image"]
+      },
+      "action": {"type": "block"}
     }
   ]' "$native" > "$staged_output"
 
@@ -138,7 +145,7 @@ errors_count="$(jq -r '.errorsCount' "$metrics")"
 unsupported_count="$(wc -l < "$staged_unsupported" | tr -d ' ')"
 final_count="$(jq 'length' "$staged_output")"
 
-[[ "$final_count" -eq $((native_count + 2)) ]]
+[[ "$final_count" -eq $((native_count + 3)) ]]
 [[ "$unsupported_count" -eq "$errors_count" ]]
 [[ "$(wc -l < "$staged_advanced" | tr -d ' ')" -eq $((advanced_count - 1)) ]]
 
@@ -169,7 +176,7 @@ jq -n \
     --arg localSHA256 "$expected_local_input_sha" \
     --arg combinedInputSHA256 "$combined_input_sha" \
     --argjson safariVersion "$safari_version" \
-    --argjson sentinelRules 2 \
+    --argjson sentinelRules 3 \
     --argjson finalSafariRules "$final_count" \
     --arg outputSHA256 "$output_sha" \
     --arg ruleSetSHA256 "$rule_set_sha" \

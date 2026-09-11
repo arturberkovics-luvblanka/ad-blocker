@@ -1,0 +1,66 @@
+#!/bin/bash
+# The package builder replaces these two values from the app being packaged.
+EXPECTED_BUNDLE_ID="__ADBLOCKER_BUNDLE_ID__"
+EXPECTED_VERSION="__ADBLOCKER_MARKETING_VERSION__"
+EXPECTED_BUILD="__ADBLOCKER_BUNDLE_BUILD__"
+
+fail() {
+  echo "Ad Blocker: $*" >&2
+  exit 1
+}
+
+valid_version() {
+  [[ "$1" =~ ^[0-9]+([.][0-9]+)*$ ]]
+}
+
+# Returns zero only when the first dotted integer version is greater than the
+# second. 10# prevents an old build such as 005 being interpreted as octal.
+version_is_greater() {
+  local left="$1" right="$2" left_part right_part
+  local -a left_parts right_parts
+  IFS='.' read -r -a left_parts <<< "$left"
+  IFS='.' read -r -a right_parts <<< "$right"
+  local count="${#left_parts[@]}"
+  (( ${#right_parts[@]} > count )) && count="${#right_parts[@]}"
+  for ((index = 0; index < count; index++)); do
+    left_part="${left_parts[index]:-0}"
+    right_part="${right_parts[index]:-0}"
+    (( 10#$left_part > 10#$right_part )) && return 0
+    (( 10#$left_part < 10#$right_part )) && return 1
+  done
+  return 1
+}
+
+[[ "$EXPECTED_BUNDLE_ID" != *"__ADBLOCKER_"* ]] || fail "The package build metadata is missing."
+valid_version "$EXPECTED_VERSION" || fail "The package version is invalid."
+valid_version "$EXPECTED_BUILD" || fail "The package build number is invalid."
+
+[[ "${3:-}" == "/" ]] || fail "Only the boot volume is supported for this update."
+
+installed="/Applications/Ad Blocker.app"
+[[ -d "$installed" ]] || exit 0
+plist="$installed/Contents/Info.plist"
+[[ -f "$plist" ]] || fail "The existing application has no Info.plist; update stopped."
+
+current_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$plist" 2>/dev/null)" || \
+  fail "The existing application identifier cannot be read; update stopped."
+[[ "$current_id" == "$EXPECTED_BUNDLE_ID" ]] || \
+  fail "The existing application has a different identifier; update stopped."
+current_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$plist" 2>/dev/null)" || \
+  fail "The existing application version cannot be read; update stopped."
+valid_version "$current_version" || fail "The existing application version is invalid; update stopped."
+current_build="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$plist" 2>/dev/null)" || \
+  fail "The existing application build number cannot be read; update stopped."
+valid_version "$current_build" || fail "The existing application build number is invalid; update stopped."
+
+if version_is_greater "$current_version" "$EXPECTED_VERSION"; then
+  fail "A newer installed version ($current_version) exists; downgrade is not allowed."
+fi
+if ! version_is_greater "$EXPECTED_VERSION" "$current_version" && \
+   version_is_greater "$current_build" "$EXPECTED_BUILD"; then
+  fail "A newer installed build ($current_build) exists; downgrade is not allowed."
+fi
+
+# Equal builds are allowed so a damaged install can be repaired by rerunning
+# the same signed package. Installer receipt versioning remains monotonic.
+exit 0

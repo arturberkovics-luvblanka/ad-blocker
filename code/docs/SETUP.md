@@ -1,61 +1,73 @@
-# Beállítás
+# Ad Blocker beállítása Macen
 
-A GitHubon jelenleg közzétett macOS csomag a v0.0.1. A fejlesztői ág v0.0.2
-forrásában már elkészült az ablak nélküli háttérbeállítás, de ez a verzió még
-nincs kiadva. A valódi `.pkg` telepítés és automatikus háttérindítás már
-sikeres; a pozitív Safari-beállítás kézi rendszerengedélyek után igazolt.
+A v0.0.2 build 5 forrásában új, látható első beállítás készül. A GitHubon
+korábban közzétett v0.0.1 csomag ettől eltér. A build és a helyi tesztek nem
+helyettesítik a Developer ID-kiadás és a Safari-újraindítás ellenőrzését.
 
-A kiadott macOS csomag részletes leírása: [INSTALLER.md](INSTALLER.md).
+## Első telepítés és megnyitás
 
-## v0.0.2 macOS onboarding
+1. Telepítsd a macOS `.pkg` csomagot. Az app helye az Alkalmazások mappa,
+   pontosan `/Applications/Ad Blocker.app`.
+2. A telepítő megkísérli elindítani az első beállítást. Ha az ablak nem
+   jelenik meg, nyisd meg az **Ad Blocker** appot az Alkalmazásokból.
+3. Az **Így működik** lépés bemutatja a két védelmi réteget és a korlátokat.
+4. A **Bekapcsolás** lépésből nyisd meg a Safari beállításait, és kapcsold be
+   az **Ad Blocker – Szűrőlista**, majd az **Ad Blocker – Oldalellenőrzés**
+   bővítményt. A kapcsolókat a Safari engedélyezi; az app nem állítja át őket.
+5. A **Webhelyek** lépés szerint add meg az Oldalellenőrzés tartós
+   hozzáférését. Ha csak egyes oldalakat engedélyezel, a fejlett védelem
+   hatóköre ezekre korlátozódik. A profilokat és a privát böngészést külön
+   ellenőrizd.
+6. A **Működéspróba** saját tesztoldalt nyit a Safariban. Az app csak friss,
+   a csomagolt motorhoz tartozó eredményt fogad el. A sikertelen próba vagy
+   időtúllépés nem kész beállítás.
+7. Siker után a **Befejezés** bezárja az appot. A szűrés a Safariban fut;
+   a korábban megnyitott oldalakat frissítsd.
 
-A v0.0.2 host `LSUIElement` agent appként, saját ablak nélkül fut. Telepítés
-után a postinstall megkísérli egyszer elindítani az aktív felhasználó
-környezetében. Ha ez nem lehetséges, nyisd meg egyszer kézzel az
-`/Applications/Ad Blocker.app` alkalmazást.
+Az appból indított próba helyben fut, külön terminál és Python-szerver nélkül.
+A tesztoldal csak a működéspróba idején érhető el. A siker a tesztelt Safari-
+környezet alapműködését igazolja, nem minden weboldal reklámmentességét.
 
-A host lekéri mindkét Safari-bővítmény állapotát. Szükség esetén egyszer
-megnyitja a Safari **Beállítások → Bővítmények** oldalát, majd legfeljebb
-120 másodpercig vár a késleltetett felismerésre és a felhasználói döntésre. Ezután:
+## Helyi, még aláíratlan tesztcsomag
 
-1. kézzel kapcsold be az **Ad Blocker – Szűrőlista** és az
-   **Ad Blocker – Oldalellenőrzés** bővítményt;
-2. a webes bővítménynek add meg a kívánt webhely-hozzáférést;
-3. töltsd újra a már nyitott oldalakat.
+Ha a felület **Helyi fejlesztői tesztverzió** jelzést mutat, a Safari külön
+fejlesztői engedélye szükséges lehet. Safari → Beállítások → Speciális:
+webfejlesztői funkciók megjelenítése, majd Fejlesztő → **Allow unsigned
+extensions**. A kapcsolót és az esetleges rendszerhitelesítést kézzel kell
+kezelni. Ezután az appban válaszd az **Új ellenőrzés** gombot.
 
-A host nem kapcsolhatja be automatikusan a Safari-bővítményeket, és nem adhat
-webhelyengedélyt. Az aláíratlan fejlesztői buildhez a Safari külön fejlesztői
-**Allow unsigned extensions** engedélye is szükséges lehet; ezt a csomag nem
-módosítja, és a Safari újraindítása után ismét kérheti.
+Ez a fejlesztői engedély Safari-kilépéskor visszaáll. A rendes terjesztési
+aláírás hiányát az onboarding nem oldhatja meg. Az Apple fejlesztői béták
+letöltése ingyenes regisztrációval is elérhető; a Developer ID és notarizálás
+külön, fizetős programhoz tartozik.
 
-Ha a háttérfolyamat eredménye nem világos:
+## Későbbi használat és frissítés
 
-```bash
-"/Applications/Ad Blocker.app/Contents/MacOS/Ad Blocker" --diagnose
-```
+Az app kézi megnyitásakor rövid állapotképernyő jelenik meg. Látható a két
+réteg aktuális kapcsolója és a legutóbbi sikeres próba időpontja. Új buildhez
+vagy új motorhoz új próba ajánlott. Az útmutató bármikor újranyitható.
 
-Az eredmény tartalmazza a natív és webes réteg állapotát, valamint a legutóbbi
-háttérbeállítás fázisát. Ismeretlen állapotot a host nem tekint sikernek.
+A már ellenőrzött, azonos build automatikus beállítása jó kapcsolóállapotnál
+csendben kilép. Másik build vagy javítandó állapot esetén az állapotképernyő
+jelenik meg; a teljes bevezetőt nem kell automatikusan újrakezdeni.
+A puszta kapcsolóállapot nem igazolja az aktuális webhelyengedélyt.
 
-## Forrásból helyi tesztbuild
+Ha az appot a beállítás közben bezárod, megőrzi a lépést. Nincs állandó
+háttérfigyelő, így a teljesen kikapcsolt bővítmény nem tud azonnal jelzést
+küldeni. Hiba esetén nyisd meg az appot vagy a Safari bővítménymenüjét.
 
-```sh
-bash code/scripts/build.sh macOS
-bash code/scripts/install-macos.sh
-python3 code/scripts/serve_fixture.py
-```
+## Fejlesztői ellenőrzés
 
-A fejlesztői install script `~/Applications/Ad Blocker.app` alá telepít. A
-publikus pkg `/Applications` alá telepít; egy gépen egy aktív példányt
-használj. A helyi fixture címe `http://127.0.0.1:8765/`. A natív hálózati
-tiltás, az elrejtés, a content-script jel és a hasznos gomb külön ellenőrzés.
+A telepítő és a kiadási aláírás részletei: [INSTALLER.md](INSTALLER.md).
+Az onboarding állapotkezelése és elfogadási kapui: [ONBOARDING.md](ONBOARDING.md).
+A tényleges teszteredmények: [TESTING.md](TESTING.md).
 
-A helyi próba nem helyettesíti a Developer ID-aláírt és notarizált kiadást.
+A telepített app `--diagnose` módja nem nyit ablakot és nem indít működéspróbát;
+a két réteget, a buildet és a legutóbbi igazolt onboardingot olvassa vissza.
+A korábbi fejlesztői fixture továbbra is elérhető a `serve_fixture.py`
+scripttel a `127.0.0.1:8765` címen; ez nem az új felhasználói próba előfeltétele.
 
-## iPhone/iPad fejlesztés
+## iPhone/iPad
 
-`bash code/scripts/build.sh iOS` aláírás nélküli fordítási ellenőrzés.
-Eszköztelepítéshez saját megfelelő Apple-aláírás/provisioning kell; a
-generált projekt az iPhone és iPad eszközcsaládot is tartalmazza.
-A generátor a manuálisan átírt Xcode-beállításokat új buildnél felülírja,
-ezért a tartós változtatásokat a `scripts/generate_project.py` fájlban végezd.
+Az iOS build jelenleg fordítási ellenőrzés. A Mac onboardingjának elkészítése
+nem jelenti kész, készüléken igazolt mobilváltozat meglétét.

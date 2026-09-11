@@ -12074,3 +12074,4 @@ mandiner.hu#$#.raw-html-embed { min-height: auto !important; }
 myonlineradio.hu#$#@media (min-width: 1200px) { .isSubPage ._bannerTop1 { height: 90px !important; } }
 origo.hu#$#.first-section { margin-top: 0 !important; }
 pcwplus.hu,gsplus.hu#$#@media (max-width: 768px) { [class="container main single-article"] { margin-top: 65px !important; } }
+127.0.0.1#?#.adblocker-self-test-advanced:has-text(advanced-marker)

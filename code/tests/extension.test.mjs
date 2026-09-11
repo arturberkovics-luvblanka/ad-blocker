@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import { readFileSync } from "node:fs";
 
-const generation = "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c";
+const generation = "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02";
 const runtimeRevision = "a".repeat(64);
 const pageDocumentId = "11111111-1111-4111-8111-111111111111";
 const blankDocumentId = "22222222-2222-4222-8222-222222222222";
@@ -60,7 +60,9 @@ function runContent({
   let releases = 0;
   let setupCalls = 0;
   let lookupCalls = 0;
-  const location = { origin, href, pathname };
+  const sentMessages = [];
+  const parsedLocation = new URL(href);
+  const location = { origin, href, pathname, hostname: parsedLocation.hostname };
   const document = {
     documentElement: root,
     addEventListener: (event, fn) => {
@@ -74,7 +76,9 @@ function runContent({
     location,
     browser: { runtime: {
       onMessage: { addListener: fn => listeners.push(fn) },
-      sendMessage: async () => {
+      sendMessage: async message => {
+        sentMessages.push(message);
+        if (message?.type === "adblocker:selftest") return { accepted: true };
         lookupCalls += 1;
         return response;
       },
@@ -100,6 +104,7 @@ function runContent({
     get listenerCount() { return listeners.length; },
     get lookupCalls() { return lookupCalls; },
     get releases() { return releases; },
+    sentMessages,
     get setupCalls() { return setupCalls; },
     ready: () => domReady(),
     rerun: () => vm.runInNewContext(content, context),
@@ -115,10 +120,12 @@ function runBackground({
   tabUrl,
   frameHandler,
   applyError,
+  fetchHandler,
 } = {}) {
   let listener;
   const nativeCalls = [];
   const applyCalls = [];
+  const fetchCalls = [];
   const browser = {
     runtime: {
       onMessage: { addListener: fn => { listener = fn; } },
@@ -148,6 +155,10 @@ function runBackground({
     browser,
     console,
     URL,
+    fetch: async (...args) => {
+      fetchCalls.push(args);
+      return fetchHandler ? fetchHandler(...args) : { ok: true };
+    },
     AdBlockerAdvancedRuntime: {
       revision: runtimeRevision,
       DocumentBackgroundScript: class {
@@ -159,7 +170,7 @@ function runBackground({
     },
   };
   vm.runInNewContext(background, context);
-  return { applyCalls, listener, nativeCalls };
+  return { applyCalls, fetchCalls, listener, nativeCalls };
 }
 
 test("bundled upstream background runtime includes compile-time raw JS functions", () => {
@@ -407,6 +418,75 @@ test("fixture publishes advanced diagnostics and stays restricted to the exact l
   assert.equal(page.document.documentElement.dataset.adBlockerAdvancedLimitations, "");
   assert.match(page.document.documentElement.dataset.adBlockerLookupMilliseconds, /^\d+$/);
   assert.deepEqual(runContent({ origin: "http://127.0.0.1:8766" }).document.documentElement.dataset, {});
+});
+
+test("content sends a nonce-bound self-test report only from the exact session path", async () => {
+  const nonce = "a".repeat(64);
+  const page = runContent({
+    origin: "http://127.0.0.1:49152",
+    href: `http://127.0.0.1:49152/session/${nonce}/`,
+    pathname: `/session/${nonce}/`,
+    response: { generation, payload: emptyPayload, delivery: "background_attempted_unverified" },
+  });
+  await settle();
+  const report = page.sentMessages.find(message => message.type === "adblocker:selftest");
+  assert.deepEqual(JSON.parse(JSON.stringify(report)), {
+    type: "adblocker:selftest",
+    nonce,
+    evidence: {
+      generation,
+      runtimeRevision,
+      advancedPhase: "background_attempted_unverified",
+      advancedError: "",
+    },
+  });
+  assert.equal(page.document.documentElement.dataset.adBlockerSelfTestExtension, "reported");
+
+  const ordinary = runContent({
+    origin: "http://127.0.0.1:49152",
+    href: "http://127.0.0.1:49152/",
+  });
+  await settle();
+  assert.equal(ordinary.sentMessages.some(message => message.type === "adblocker:selftest"), false);
+});
+
+test("background derives the self-test callback from its verified sender", async () => {
+  const nonce = "b".repeat(64);
+  const pageURL = `http://127.0.0.1:54321/session/${nonce}/`;
+  const run = runBackground({ currentUrl: pageURL, tabUrl: pageURL });
+  const response = await run.listener({
+    type: "adblocker:selftest",
+    nonce,
+    evidence: {
+      generation,
+      runtimeRevision,
+      advancedPhase: "background_attempted_unverified",
+      advancedError: "",
+    },
+  }, {
+    tab: { id: 7, url: pageURL },
+    frameId: 0,
+    documentId: pageDocumentId,
+    url: pageURL,
+  });
+  assert.equal(response.accepted, true);
+  assert.equal(run.fetchCalls.length, 1);
+  assert.equal(run.fetchCalls[0][0], `${pageURL}extension-report`);
+  const body = JSON.parse(run.fetchCalls[0][1].body);
+  assert.equal(body.nonce, nonce);
+  assert.equal(body.generation, generation);
+  assert.equal(body.contentGeneration, generation);
+  assert.equal(body.runtimeRevision, runtimeRevision);
+
+  const forged = await run.listener({
+    type: "adblocker:selftest",
+    nonce,
+    evidence: { generation: "0".repeat(64), runtimeRevision, advancedPhase: "background_attempted_unverified", advancedError: "" },
+  }, {
+    tab: { id: 7, url: pageURL }, frameId: 0, documentId: pageDocumentId, url: pageURL,
+  });
+  assert.equal(forged.accepted, false);
+  assert.equal(run.fetchCalls.length, 1);
 });
 
 test("background ignores message URL and derives lookup URLs from sender", async () => {
@@ -858,4 +938,23 @@ test("fixture server addresses agree with native rules and extension manifests",
       assert.equal(new URL(pattern).hostname, origin.hostname, `${fixture}: ${pattern}`);
     }
   }
+});
+
+test("production self-test sentinels match only the intended localhost evidence", () => {
+  const rules = JSON.parse(readFileSync(new URL("../filters/blockerList.json", import.meta.url), "utf8"));
+  const network = rules.find(rule => rule.trigger["url-filter"].includes("adblocker-self-test-blocked"));
+  assert.deepEqual(network.action, { type: "block" });
+  assert.deepEqual(network.trigger["resource-type"], ["image"]);
+  const expression = new RegExp(network.trigger["url-filter"]);
+  const nonce = "a".repeat(64);
+  assert.equal(expression.test(`http://127.0.0.1:49152/adblocker-self-test-blocked.svg?session=${nonce}`), true);
+  assert.equal(expression.test(`https://127.0.0.1:49152/adblocker-self-test-blocked.svg?session=${nonce}`), false);
+  assert.equal(expression.test(`http://127.0.0.2:49152/adblocker-self-test-blocked.svg?session=${nonce}`), false);
+  assert.equal(expression.test(`http://127.0.0.1:49152/allowed.svg?session=${nonce}`), false);
+  const cosmetic = rules.find(rule => rule.action.selector === ".adblocker-self-test-native");
+  assert.deepEqual(cosmetic.trigger["if-domain"], ["*127.0.0.1"]);
+  const advanced = readFileSync(
+    new URL("../filters/generated/adguard-base-advanced.txt", import.meta.url), "utf8",
+  ).split("\n").filter(line => line.includes("adblocker-self-test-advanced"));
+  assert.deepEqual(advanced, ["127.0.0.1#?#.adblocker-self-test-advanced:has-text(advanced-marker)"]);
 });

@@ -66,5 +66,13 @@ struct AdvancedRuleStoreTests {
         let frame = try store.configuration(for: ["type": "lookup", "url": "https://www.youtube.com/embed/test", "topUrl": "https://example.com/"])
         precondition(!(frame["scriptlets"] as! [[String: Any]]).isEmpty)
         print("PASS: embedded YouTube lookup returns scriptlets")
+
+        let selfTest = try store.configuration(for: [
+            "type": "lookup",
+            "url": "http://127.0.0.1:49152/session/" + String(repeating: "a", count: 64) + "/",
+        ])
+        let selfTestExtendedCSS = selfTest["extendedCss"] as! [String]
+        precondition(selfTestExtendedCSS.contains(".adblocker-self-test-advanced:has-text(advanced-marker)"))
+        print("PASS: production localhost lookup returns the deterministic advanced self-test rule")
     }
 }

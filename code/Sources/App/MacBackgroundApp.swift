@@ -1,15 +1,15 @@
 #if os(macOS)
 import AppKit
+import SwiftUI
 import SafariServices
-import OSLog
 
-// Safari owns the extensions. This host has no window and is only needed for
-// discovery, the user's first setup, and activation of a new bundled rule list.
+// Safari owns the filtering. The host is used for setup, diagnostics and updates.
 @MainActor
-final class MacBackgroundApp: NSObject, NSApplicationDelegate {
-    private static let logger = Logger(subsystem: "org.local.adblocker", category: "Setup")
-    private var setupTask: Task<Void, Never>?
-    private var needsSettings = true
+final class MacBackgroundApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
+    private var startup: Task<Void, Never>?
+    private var model: MacOnboardingModel?
+    private var window: NSWindow?
+    private var reopening = false
 
     static func run() {
         let app = NSApplication.shared
@@ -20,9 +20,9 @@ final class MacBackgroundApp: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        setupTask = Task {
-            // Installer uses a new process so an older running build cannot
-            // consume the launch request. Let that older host exit first.
+        startup = Task { [weak self] in
+            guard let self else { return }
+            // A package update must run its new host, not an older process.
             let instances = NSRunningApplication.runningApplications(withBundleIdentifier: Bundle.main.bundleIdentifier ?? "")
                 .filter { $0.bundleURL == Bundle.main.bundleURL }
             let newest = instances.max {
@@ -36,97 +36,80 @@ final class MacBackgroundApp: NSObject, NSApplicationDelegate {
             let previous = instances.filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
             for app in previous { app.terminate() }
             for _ in 0..<25 where previous.contains(where: { !$0.isTerminated }) {
-                try? await Task.sleep(for: .milliseconds(200))
+                do { try await Task.sleep(for: .milliseconds(200)) } catch { return }
             }
-            guard previous.allSatisfy(\.isTerminated) else {
-                Self.logger.error("Previous host is still running; setup deferred until it exits.")
+            guard previous.allSatisfy(\.isTerminated), !Task.isCancelled else {
                 NSApplication.shared.terminate(nil)
                 return
             }
-            await setup()
-            NSApplication.shared.terminate(nil)
+            let model = MacOnboardingModel()
+            self.model = model
+            let automatic = CommandLine.arguments.contains("--setup")
+            if automatic && model.previouslyCompleted && !reopening {
+                // Repeated setup of this already-tested build stays quiet when
+                // switches are still on. This does not prove current site access.
+                await model.refresh()
+                if model.readiness.canTest && model.verifiedThisBuild && !reopening && !Task.isCancelled {
+                    NSApplication.shared.terminate(nil)
+                    return
+                }
+            }
+            showWindow()
+            model.beginDiscovery()
         }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        needsSettings = true
+        reopening = true
+        if model != nil { showWindow() }
         return false
     }
 
-    private func record(_ phase: String, native: SafariSetupState, web: SafariSetupState) {
-        let result: [String: Any] = [
-            "phase": phase,
-            "date": Date().timeIntervalSince1970,
-            "version": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "",
-            "native": native.dictionary,
-            "web": web.dictionary,
-            "ownWindowCount": NSApplication.shared.windows.count,
-        ]
-        UserDefaults.standard.set(result, forKey: "lastBackgroundSetup")
-        Self.logger.info("Setup: \(phase, privacy: .public)")
+    func applicationDidBecomeActive(_ notification: Notification) {
+        guard window?.isVisible == true, let model else { return }
+        Task { await model.refresh() }
     }
 
-    private func setup() async {
-        guard let identifier = Bundle.main.bundleIdentifier,
-              let plugins = Bundle.main.builtInPlugInsURL,
-              ["AdBlockerContentBlocker.appex", "AdBlockerWebExtension.appex"].allSatisfy({
-                  FileManager.default.fileExists(atPath: plugins.appendingPathComponent($0).path)
-              }) else {
-            Self.logger.error("The installed application is missing its bundled extensions.")
-            return
+    func applicationWillTerminate(_ notification: Notification) {
+        startup?.cancel()
+        model?.stop()
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        model?.stop()
+        NSApplication.shared.terminate(nil)
+    }
+
+    private func showWindow() {
+        guard let model else { return }
+        if window == nil {
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 820, height: 700),
+                                  styleMask: [.titled, .closable, .miniaturizable, .resizable],
+                                  backing: .buffered, defer: false)
+            window.title = "Ad Blocker"
+            window.contentMinSize = NSSize(width: 740, height: 620)
+            window.isReleasedWhenClosed = false
+            window.delegate = self
+            window.contentView = NSHostingView(rootView: MacOnboardingView(model: model) { [weak self] in
+                self?.window?.close()
+            })
+            window.center()
+            self.window = window
+            installMenu()
         }
-        let nativeID = identifier + ".ContentBlocker"
-        let webID = identifier + ".WebExtension"
+        NSApplication.shared.setActivationPolicy(.regular)
+        window?.makeKeyAndOrderFront(nil)
+        NSApplication.shared.activate(ignoringOtherApps: true)
+    }
 
-        // Discovery and the user's Safari approval are asynchronous. Keep the
-        // same bounded setup alive through both instead of quitting on the
-        // first no-extension-found reply after installation.
-        let deadline = ContinuousClock.now.advanced(by: .seconds(120))
-        var native = await SafariSetupState.native(nativeID)
-        var web = await SafariSetupState.web(webID)
-
-        while !Task.isCancelled {
-            if native.enabled {
-                let outcome = await NativeRuleBundle.activate(enabled: true)
-                switch outcome {
-                case .current, .reloaded:
-                    if web.enabled {
-                        // Website permissions remain a separate Safari decision.
-                        record("extensions-enabled-site-permissions-managed-by-safari", native: native, web: web)
-                        return
-                    }
-                default:
-                    record("native-rule-activation-not-confirmed", native: native, web: web)
-                    return
-                }
-            }
-
-            if needsSettings && native.known && web.known {
-                needsSettings = false
-                let target = !native.enabled ? nativeID : webID
-                let error: String? = await safariRequest(timeout: .seconds(15)) { done in
-                    SFSafariApplication.showPreferencesForExtension(withIdentifier: target) { error in
-                        done(error?.localizedDescription ?? "")
-                    }
-                }
-                if error != "" {
-                    Self.logger.error("Safari settings could not select the extension: \(error ?? "timeout", privacy: .public)")
-                }
-            }
-
-            if !native.known || !web.known {
-                // Missing registration and an unsigned extension rejected by
-                // Safari can produce the same API error. Never invent a cause
-                // or change Safari's developer/security preferences here.
-                record("extension-unavailable-check-signing-and-safari", native: native, web: web)
-            } else {
-                record("waiting-for-user-in-safari", native: native, web: web)
-            }
-            guard ContinuousClock.now < deadline else { return }
-            try? await Task.sleep(for: .seconds(2))
-            native = await SafariSetupState.native(nativeID)
-            web = await SafariSetupState.web(webID)
-        }
+    private func installMenu() {
+        let menu = NSMenu()
+        let item = NSMenuItem()
+        menu.addItem(item)
+        let appMenu = NSMenu()
+        appMenu.addItem(withTitle: "Ad Blocker bezárása", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        item.submenu = appMenu
+        NSApplication.shared.mainMenu = menu
     }
 }
 

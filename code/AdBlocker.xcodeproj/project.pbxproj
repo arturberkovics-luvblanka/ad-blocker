@@ -21,6 +21,105 @@
 			<key>lastKnownFileType</key>
 			<string>sourcecode.swift</string>
 		</dict>
+		<key>05D4EA1D6C0FFC36927A0459</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/MacBackgroundApp.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>441DF5E9E3C5EC6B17B14CA7</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/MacOnboardingModel.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>AE2A9017EFA497679E03DA73</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/MacOnboardingView.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>3284F45779E1A5C1A1D8FA70</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/NativeRuleActivation.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>162A0AF17EAD35DB15BA8554</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/NativeRuleBundle.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>094C5D72DEE77908EC58C1C6</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/OnboardingState.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>8EF1EBEF8E2386661C0B9781</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/ProtectionSelfTest.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>64C15C758CA59D66029F90F6</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/SafariDiagnostics.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
+		<key>979B155B26926C34E0B349DE</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Sources/App/SafariRequest.swift</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+		</dict>
 		<key>04AB4DE0F2A872ED9A61B6A0</key>
 		<dict>
 			<key>isa</key>
@@ -54,61 +153,6 @@
 			<key>lastKnownFileType</key>
 			<string>text.json</string>
 		</dict>
-		<key>979B155B26926C34E0B349DE</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Sources/App/SafariRequest.swift</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-		</dict>
-		<key>64C15C758CA59D66029F90F6</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Sources/App/SafariDiagnostics.swift</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-		</dict>
-		<key>3284F45779E1A5C1A1D8FA70</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Sources/App/NativeRuleActivation.swift</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-		</dict>
-		<key>162A0AF17EAD35DB15BA8554</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Sources/App/NativeRuleBundle.swift</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-		</dict>
-		<key>05D4EA1D6C0FFC36927A0459</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Sources/App/MacBackgroundApp.swift</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-		</dict>
 		<key>D2CE934BA3BD47EACA167AB3</key>
 		<dict>
 			<key>isa</key>
@@ -130,6 +174,17 @@
 			<string>SOURCE_ROOT</string>
 			<key>lastKnownFileType</key>
 			<string>text</string>
+		</dict>
+		<key>F5371C71EEBDF7220071E06B</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>extension-runtime/build-manifest.json</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>text.json</string>
 		</dict>
 		<key>F29DAEAC0F2945A3C327F3B1</key>
 		<dict>
@@ -314,6 +369,50 @@
 			<key>lastKnownFileType</key>
 			<string>text.json</string>
 		</dict>
+		<key>260CD6E01682B5D761462092</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Resources/SelfTest/index.html</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+		</dict>
+		<key>82C07186C9BD99036EA54153</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Resources/SelfTest/self-test.css</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+		</dict>
+		<key>01946E0A69674F25F8A767CF</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Resources/SelfTest/self-test.js</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>text</string>
+		</dict>
+		<key>CF64BAA0B18777D6DE7D2228</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Configuration/macOS-Signing.xcconfig</string>
+			<key>sourceTree</key>
+			<string>SOURCE_ROOT</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+		</dict>
 		<key>CA73AA568B79A9F19ED1A196</key>
 		<dict>
 			<key>isa</key>
@@ -401,9 +500,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Configuration/macOS-ContentBlocker.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
+				<string>Manual</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -430,6 +527,8 @@
 				<key>ONLY_ACTIVE_ARCH</key>
 				<string>YES</string>
 			</dict>
+			<key>baseConfigurationReference</key>
+			<string>CF64BAA0B18777D6DE7D2228</string>
 		</dict>
 		<key>26C54BFEDD56A6FF120CD71A</key>
 		<dict>
@@ -454,9 +553,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Configuration/macOS-ContentBlocker.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
+				<string>Manual</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -483,6 +580,8 @@
 				<key>ONLY_ACTIVE_ARCH</key>
 				<string>NO</string>
 			</dict>
+			<key>baseConfigurationReference</key>
+			<string>CF64BAA0B18777D6DE7D2228</string>
 		</dict>
 		<key>57D394A122F30331A749FFEE</key>
 		<dict>
@@ -726,9 +825,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Configuration/macOS-WebExtension.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
+				<string>Manual</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -749,6 +846,8 @@
 				<key>ONLY_ACTIVE_ARCH</key>
 				<string>YES</string>
 			</dict>
+			<key>baseConfigurationReference</key>
+			<string>CF64BAA0B18777D6DE7D2228</string>
 		</dict>
 		<key>FF7DA5D157ED13938ADD3161</key>
 		<dict>
@@ -773,9 +872,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Configuration/macOS-WebExtension.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
+				<string>Manual</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -796,6 +893,8 @@
 				<key>ONLY_ACTIVE_ARCH</key>
 				<string>NO</string>
 			</dict>
+			<key>baseConfigurationReference</key>
+			<string>CF64BAA0B18777D6DE7D2228</string>
 		</dict>
 		<key>F8C90294FC9C423C34016384</key>
 		<dict>
@@ -860,19 +959,26 @@
 			<key>fileRef</key>
 			<string>75B026537BEE8AD767634C3C</string>
 		</dict>
-		<key>A0307A2F038FAB8A67F37F64</key>
+		<key>7E7DB2F3C08055DF8167B1B6</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>fileRef</key>
-			<string>979B155B26926C34E0B349DE</string>
+			<string>05D4EA1D6C0FFC36927A0459</string>
 		</dict>
-		<key>9E25B231556221B9DEFC4E1B</key>
+		<key>641AC01106778DC8B5E7CEF8</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>fileRef</key>
-			<string>64C15C758CA59D66029F90F6</string>
+			<string>441DF5E9E3C5EC6B17B14CA7</string>
+		</dict>
+		<key>CB2C6641CF3B92A12DCD1FDF</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>AE2A9017EFA497679E03DA73</string>
 		</dict>
 		<key>5A260E14B0E09D0B7AEFAF7D</key>
 		<dict>
@@ -888,12 +994,33 @@
 			<key>fileRef</key>
 			<string>162A0AF17EAD35DB15BA8554</string>
 		</dict>
-		<key>7E7DB2F3C08055DF8167B1B6</key>
+		<key>25172A41CE6F9FB452BD51C8</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>fileRef</key>
-			<string>05D4EA1D6C0FFC36927A0459</string>
+			<string>094C5D72DEE77908EC58C1C6</string>
+		</dict>
+		<key>22C0EFDFFC71B55B77E1B348</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>8EF1EBEF8E2386661C0B9781</string>
+		</dict>
+		<key>9E25B231556221B9DEFC4E1B</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>64C15C758CA59D66029F90F6</string>
+		</dict>
+		<key>A0307A2F038FAB8A67F37F64</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>979B155B26926C34E0B349DE</string>
 		</dict>
 		<key>B5ED3F30577DF994959502D0</key>
 		<dict>
@@ -904,11 +1031,15 @@
 			<key>files</key>
 			<array>
 				<string>932944C0FA0D05C4F9117280</string>
-				<string>A0307A2F038FAB8A67F37F64</string>
-				<string>9E25B231556221B9DEFC4E1B</string>
+				<string>7E7DB2F3C08055DF8167B1B6</string>
+				<string>641AC01106778DC8B5E7CEF8</string>
+				<string>CB2C6641CF3B92A12DCD1FDF</string>
 				<string>5A260E14B0E09D0B7AEFAF7D</string>
 				<string>13AD2F1112607B8307784501</string>
-				<string>7E7DB2F3C08055DF8167B1B6</string>
+				<string>25172A41CE6F9FB452BD51C8</string>
+				<string>22C0EFDFFC71B55B77E1B348</string>
+				<string>9E25B231556221B9DEFC4E1B</string>
+				<string>A0307A2F038FAB8A67F37F64</string>
 			</array>
 			<key>runOnlyForDeploymentPostprocessing</key>
 			<integer>0</integer>
@@ -948,6 +1079,34 @@
 			<key>fileRef</key>
 			<string>FC6CD4A7B6E34D1315E4DDEF</string>
 		</dict>
+		<key>209E9CE55B8A45CE96FC254E</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>F5371C71EEBDF7220071E06B</string>
+		</dict>
+		<key>672AAA56683E0ACAB33332A4</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>260CD6E01682B5D761462092</string>
+		</dict>
+		<key>A3801F630384369BAAA6830A</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>82C07186C9BD99036EA54153</string>
+		</dict>
+		<key>1231CDAA9C281972D1441A89</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>01946E0A69674F25F8A767CF</string>
+		</dict>
 		<key>55C994B5D3356F809BA52191</key>
 		<dict>
 			<key>isa</key>
@@ -961,6 +1120,10 @@
 				<string>C3B9B4CF62F8BCF177450B49</string>
 				<string>96066ACE3468E093E633A220</string>
 				<string>C7566B41D7EB1C1D48E91084</string>
+				<string>209E9CE55B8A45CE96FC254E</string>
+				<string>672AAA56683E0ACAB33332A4</string>
+				<string>A3801F630384369BAAA6830A</string>
+				<string>1231CDAA9C281972D1441A89</string>
 			</array>
 			<key>runOnlyForDeploymentPostprocessing</key>
 			<integer>0</integer>
@@ -1091,9 +1254,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Configuration/macOS-App.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
+				<string>Manual</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -1112,6 +1273,8 @@
 				<key>ONLY_ACTIVE_ARCH</key>
 				<string>YES</string>
 			</dict>
+			<key>baseConfigurationReference</key>
+			<string>CF64BAA0B18777D6DE7D2228</string>
 		</dict>
 		<key>C5CB42E05446EE918D245A87</key>
 		<dict>
@@ -1136,9 +1299,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Configuration/macOS-App.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
+				<string>Manual</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -1157,6 +1318,8 @@
 				<key>ONLY_ACTIVE_ARCH</key>
 				<string>NO</string>
 			</dict>
+			<key>baseConfigurationReference</key>
+			<string>CF64BAA0B18777D6DE7D2228</string>
 		</dict>
 		<key>1F25CB37E1864AF2A45C9D8D</key>
 		<dict>
@@ -1291,8 +1454,6 @@
 				<string>Configuration/iOS-ContentBlocker.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
 				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Apple Development</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -1306,6 +1467,8 @@
 				<string>17.0</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>SUPPORTS_MACCATALYST</key>
@@ -1348,8 +1511,6 @@
 				<string>Configuration/iOS-ContentBlocker.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
 				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Apple Development</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -1363,6 +1524,8 @@
 				<string>17.0</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>SUPPORTS_MACCATALYST</key>
@@ -1624,8 +1787,6 @@
 				<string>Configuration/iOS-WebExtension.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
 				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Apple Development</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -1639,6 +1800,8 @@
 				<string>17.0</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>SUPPORTS_MACCATALYST</key>
@@ -1675,8 +1838,6 @@
 				<string>Configuration/iOS-WebExtension.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
 				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Apple Development</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -1690,6 +1851,8 @@
 				<string>17.0</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>SUPPORTS_MACCATALYST</key>
@@ -1765,19 +1928,26 @@
 			<key>fileRef</key>
 			<string>75B026537BEE8AD767634C3C</string>
 		</dict>
-		<key>970033B70B18E489898584E6</key>
+		<key>D40C73A125C2AEEA9C3E84F7</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>fileRef</key>
-			<string>979B155B26926C34E0B349DE</string>
+			<string>05D4EA1D6C0FFC36927A0459</string>
 		</dict>
-		<key>832B7CBF447EF71E8E93876B</key>
+		<key>1D93BC4C53FFAF4198F826B8</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>fileRef</key>
-			<string>64C15C758CA59D66029F90F6</string>
+			<string>441DF5E9E3C5EC6B17B14CA7</string>
+		</dict>
+		<key>9F100DB4114B7791FC446692</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>AE2A9017EFA497679E03DA73</string>
 		</dict>
 		<key>6513390429423ECD570B999A</key>
 		<dict>
@@ -1793,12 +1963,33 @@
 			<key>fileRef</key>
 			<string>162A0AF17EAD35DB15BA8554</string>
 		</dict>
-		<key>D40C73A125C2AEEA9C3E84F7</key>
+		<key>C70F6FF1A85FE35D34F6AACD</key>
 		<dict>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 			<key>fileRef</key>
-			<string>05D4EA1D6C0FFC36927A0459</string>
+			<string>094C5D72DEE77908EC58C1C6</string>
+		</dict>
+		<key>055F57C016B5678B7D91F29C</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>8EF1EBEF8E2386661C0B9781</string>
+		</dict>
+		<key>832B7CBF447EF71E8E93876B</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>64C15C758CA59D66029F90F6</string>
+		</dict>
+		<key>970033B70B18E489898584E6</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+			<key>fileRef</key>
+			<string>979B155B26926C34E0B349DE</string>
 		</dict>
 		<key>C03B347FBD496EF1C8515E0A</key>
 		<dict>
@@ -1809,11 +2000,15 @@
 			<key>files</key>
 			<array>
 				<string>8A982CC2E3FF3A0BA07F4FCA</string>
-				<string>970033B70B18E489898584E6</string>
-				<string>832B7CBF447EF71E8E93876B</string>
+				<string>D40C73A125C2AEEA9C3E84F7</string>
+				<string>1D93BC4C53FFAF4198F826B8</string>
+				<string>9F100DB4114B7791FC446692</string>
 				<string>6513390429423ECD570B999A</string>
 				<string>646F0FBD3331D096C4B2FB38</string>
-				<string>D40C73A125C2AEEA9C3E84F7</string>
+				<string>C70F6FF1A85FE35D34F6AACD</string>
+				<string>055F57C016B5678B7D91F29C</string>
+				<string>832B7CBF447EF71E8E93876B</string>
+				<string>970033B70B18E489898584E6</string>
 			</array>
 			<key>runOnlyForDeploymentPostprocessing</key>
 			<integer>0</integer>
@@ -1997,8 +2192,6 @@
 				<string>Configuration/iOS-App.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
 				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Apple Development</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -2012,6 +2205,8 @@
 				<string>17.0</string>
 				<key>SKIP_INSTALL</key>
 				<string>NO</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>SUPPORTS_MACCATALYST</key>
@@ -2046,8 +2241,6 @@
 				<string>Configuration/iOS-App.entitlements</string>
 				<key>CODE_SIGN_STYLE</key>
 				<string>Automatic</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>Apple Development</string>
 				<key>ENABLE_HARDENED_RUNTIME</key>
 				<string>YES</string>
 				<key>CLANG_ENABLE_MODULES</key>
@@ -2061,6 +2254,8 @@
 				<string>17.0</string>
 				<key>SKIP_INSTALL</key>
 				<string>NO</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>SUPPORTS_MACCATALYST</key>
@@ -2141,16 +2336,22 @@
 			<key>children</key>
 			<array>
 				<string>75B026537BEE8AD767634C3C</string>
-				<string>04AB4DE0F2A872ED9A61B6A0</string>
-				<string>F176202532C5A65E19D320EB</string>
-				<string>979B155B26926C34E0B349DE</string>
-				<string>64C15C758CA59D66029F90F6</string>
+				<string>05D4EA1D6C0FFC36927A0459</string>
+				<string>441DF5E9E3C5EC6B17B14CA7</string>
+				<string>AE2A9017EFA497679E03DA73</string>
 				<string>3284F45779E1A5C1A1D8FA70</string>
 				<string>162A0AF17EAD35DB15BA8554</string>
-				<string>05D4EA1D6C0FFC36927A0459</string>
+				<string>094C5D72DEE77908EC58C1C6</string>
+				<string>8EF1EBEF8E2386661C0B9781</string>
+				<string>64C15C758CA59D66029F90F6</string>
+				<string>979B155B26926C34E0B349DE</string>
+				<string>04AB4DE0F2A872ED9A61B6A0</string>
+				<string>F176202532C5A65E19D320EB</string>
 				<string>D2CE934BA3BD47EACA167AB3</string>
 				<string>6132B17002769460484FB7C0</string>
 				<string>11863230F22C5268BC92ECBE</string>
+				<string>F5371C71EEBDF7220071E06B</string>
+				<string>CF64BAA0B18777D6DE7D2228</string>
 				<string>EC9548EE4571E61D0BACA252</string>
 				<string>EE0A891810A7FF7B2192B28F</string>
 				<string>EE0D8635B56C76D17FAD2A0C</string>
@@ -2167,6 +2368,9 @@
 				<string>9BE42A24B24BDCA3AD02E4BE</string>
 				<string>AEEBE5126D54A0DDC3E3C14A</string>
 				<string>FC6CD4A7B6E34D1315E4DDEF</string>
+				<string>260CD6E01682B5D761462092</string>
+				<string>82C07186C9BD99036EA54153</string>
+				<string>01946E0A69674F25F8A767CF</string>
 				<string>4EDC8BFAFC6BD936B849F38C</string>
 			</array>
 			<key>sourceTree</key>

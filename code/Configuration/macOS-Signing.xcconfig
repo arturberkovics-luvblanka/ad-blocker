@@ -1,0 +1,15 @@
+// This file is deliberately safe for local builds. A direct-distribution build
+// must override these values through code/scripts/build.sh --distribution.
+// Keep certificate names, team identifiers, provisioning files, and credentials
+// out of the repository.
+CODE_SIGN_IDENTITY = -
+CODE_SIGN_STYLE = Manual
+DEVELOPMENT_TEAM =
+CODE_SIGNING_REQUIRED = YES
+CODE_SIGNING_ALLOWED = YES
+ENABLE_HARDENED_RUNTIME = YES
+
+// Keep local source paths out of the distributed binary's debug metadata.
+// Quotes make the expanded SRCROOT one Swift argument when the workspace path
+// itself contains spaces.
+OTHER_SWIFT_FLAGS = $(inherited) -debug-prefix-map "$(SRCROOT)=/AdBlocker" -file-prefix-map "$(SRCROOT)=/AdBlocker"

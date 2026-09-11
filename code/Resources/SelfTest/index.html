@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad Blocker – működéspróba</title>
+  <link rel="stylesheet" href="/self-test.css">
+</head>
+<body>
+  <main>
+    <p class="eyebrow">AD BLOCKER · HELYI MŰKÖDÉSPRÓBA</p>
+    <h1>A védelem ellenőrzése folyamatban</h1>
+    <p id="summary">Ez a lap csak ezen a Macen érhető el, és a próba végén automatikusan leáll.</p>
+    <ol id="checks" aria-live="polite">
+      <li id="control-state">Hasznos tartalom betöltése…</li>
+      <li id="network-state">Hálózati blokkolás ellenőrzése…</li>
+      <li id="native-state">Reklámhely elrejtésének ellenőrzése…</li>
+      <li id="advanced-state">Fejlett védelem ellenőrzése…</li>
+      <li id="extension-state">Webes bővítmény ellenőrzése…</li>
+    </ol>
+    <section class="adblocker-self-test-native">Natív teszt-reklámhely</section>
+    <section class="adblocker-self-test-advanced">advanced-marker</section>
+    <button id="useful-control" type="button">Működő próbagomb: 0</button>
+    <p class="fine-print">A siker az alapvető helyi működést igazolja, nem minden weboldal teljes reklámmentességét.</p>
+  </main>
+  <script src="/self-test.js"></script>
+</body>
+</html>

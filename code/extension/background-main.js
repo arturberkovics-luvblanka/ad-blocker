@@ -1,6 +1,7 @@
 "use strict";
 
-const ADVANCED_GENERATION = "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c";
+const ADVANCED_GENERATION = "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02";
+const EXTENSION_VERSION = "0.0.2";
 const NATIVE_APPLICATION_ID = "org.local.adblocker";
 const requestSequence = new Map();
 
@@ -209,6 +210,64 @@ async function handleLookup(message, sender) {
   };
 }
 
+function validSelfTestEvidence(value) {
+  return value !== null && typeof value === "object"
+    && value.generation === ADVANCED_GENERATION
+    && value.runtimeRevision === globalThis.AdBlockerAdvancedRuntime?.revision
+    && value.advancedPhase === "background_attempted_unverified"
+    && value.advancedError === "";
+}
+
+async function handleSelfTest(message, sender) {
+  if (typeof message?.nonce !== "string" || !/^[0-9a-f]{64}$/.test(message.nonce)
+      || !validSelfTestEvidence(message.evidence)) {
+    return { accepted: false };
+  }
+  let target;
+  try {
+    target = await targetFromSender(sender);
+  } catch {
+    return { accepted: false };
+  }
+  if (target.error || target.frameId !== 0) return { accepted: false };
+  try {
+    if (!(await currentTargetMatches(target))) return { accepted: false };
+  } catch {
+    return { accepted: false };
+  }
+  const url = new URL(target.url);
+  if (url.protocol !== "http:" || url.hostname !== "127.0.0.1"
+      || url.username || url.password
+      || url.pathname !== `/session/${message.nonce}/`
+      || url.search || url.hash) {
+    return { accepted: false };
+  }
+  const reportURL = new URL(`session/${message.nonce}/extension-report`, url.origin + "/");
+  const report = {
+    schema: 1,
+    nonce: message.nonce,
+    extensionVersion: EXTENSION_VERSION,
+    generation: ADVANCED_GENERATION,
+    runtimeRevision: globalThis.AdBlockerAdvancedRuntime?.revision ?? "",
+    contentGeneration: message.evidence.generation,
+    contentRuntimeRevision: message.evidence.runtimeRevision,
+    advancedPhase: message.evidence.advancedPhase,
+    advancedError: message.evidence.advancedError,
+  };
+  try {
+    const response = await fetch(reportURL.href, {
+      method: "POST",
+      cache: "no-store",
+      credentials: "omit",
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify(report),
+    });
+    return { accepted: response.ok };
+  } catch {
+    return { accepted: false };
+  }
+}
+
 browser.runtime.onMessage.addListener((message, sender) => {
   if (message?.type === "adblocker:metadata") {
     return Promise.resolve({
@@ -216,6 +275,7 @@ browser.runtime.onMessage.addListener((message, sender) => {
       runtimeRevision: globalThis.AdBlockerAdvancedRuntime?.revision,
     });
   }
+  if (message?.type === "adblocker:selftest") return handleSelfTest(message, sender);
   if (message?.type !== "lookup") return undefined;
   return handleLookup(message, sender);
 });

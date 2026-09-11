@@ -11,6 +11,48 @@ CODE = Path(__file__).resolve().parents[1]
 
 
 class PostinstallTests(unittest.TestCase):
+    def run_preinstall(self, *, current_id="org.local.adblocker", current_version="0.0.2", current_build="5", app_exists=True, target="/"):
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            app = root / "Ad Blocker.app"
+            if app_exists:
+                (app / "Contents").mkdir(parents=True)
+                (app / "Contents/Info.plist").write_text("placeholder")
+            mock = root / "PlistBuddy"
+            mock.write_text('''#!/usr/bin/env python3
+import os, sys
+if "CFBundleIdentifier" in sys.argv[2]: print(os.environ["MOCK_BUNDLE_ID"])
+elif "CFBundleShortVersionString" in sys.argv[2]: print(os.environ["MOCK_VERSION"])
+elif "CFBundleVersion" in sys.argv[2]: print(os.environ["MOCK_BUILD"])
+else: sys.exit(1)
+''')
+            mock.chmod(0o755)
+            source = (CODE / "installer/preinstall").read_text()
+            source = source.replace("__ADBLOCKER_BUNDLE_ID__", "org.local.adblocker")
+            source = source.replace("__ADBLOCKER_MARKETING_VERSION__", "0.0.2")
+            source = source.replace("__ADBLOCKER_BUNDLE_BUILD__", "5")
+            source = source.replace("/Applications/Ad Blocker.app", str(app))
+            source = source.replace("/usr/libexec/PlistBuddy", str(mock))
+            script = root / "preinstall"
+            script.write_text(source)
+            result = subprocess.run(["/bin/bash", str(script), "package.pkg", "/", target],
+                                    env={**os.environ, "MOCK_BUNDLE_ID": current_id, "MOCK_VERSION": current_version, "MOCK_BUILD": current_build},
+                                    capture_output=True, text=True)
+            return result
+
+    def test_preinstall_allows_equal_or_newer_build_and_rejects_downgrade(self):
+        for current in ("4", "5", "4.9"):
+            with self.subTest(current=current):
+                self.assertEqual(self.run_preinstall(current_build=current).returncode, 0)
+        result = self.run_preinstall(current_build="6")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("downgrade", result.stderr)
+        self.assertNotEqual(self.run_preinstall(current_id="org.other.app").returncode, 0)
+        self.assertNotEqual(self.run_preinstall(current_build="not-a-version").returncode, 0)
+        self.assertNotEqual(self.run_preinstall(current_version="0.0.3", current_build="1").returncode, 0)
+        self.assertEqual(self.run_preinstall(current_version="0.0.1", current_build="999").returncode, 0)
+        self.assertNotEqual(self.run_preinstall(target="/Volumes/Other").returncode, 0)
+
     def run_installer(self, *, user="desktopuser", uid="501", target="/",
                       app_exists=True, stat_status=0, id_status=0,
                       launch_status=0, open_status=0):
@@ -92,33 +134,46 @@ sys.exit(99)
                 self.assertIn("manually", output)
                 self.assertNotIn("launch requested", output)
 
-    def test_packaging_accepts_only_exact_executable_postinstall(self):
+    def test_packaging_accepts_only_expected_executable_scripts(self):
         source = (CODE / "scripts/package-macos.sh").read_text()
-        marker = 'python3 - "$EXPANDED" "$POSTINSTALL" <<\'PY\'\n'
+        marker = 'python3 - "$EXPANDED" "$PREINSTALL" "$POSTINSTALL" "$BUNDLE_ID" "$VERSION" "$BUILD_NUMBER" <<\'PY\'\n'
         validator = source.split(marker, 1)[1].split("\nPY\n", 1)[0]
         with tempfile.TemporaryDirectory() as scratch:
             root = Path(scratch)
             scripts = root / "Scripts"
             scripts.mkdir()
-            actual = scripts / "postinstall"
-            expected = CODE / "installer/postinstall"
-            actual.write_bytes(expected.read_bytes())
-            actual.chmod(0o755)
+            postinstall = scripts / "postinstall"
+            expected_postinstall = CODE / "installer/postinstall"
+            postinstall.write_bytes(expected_postinstall.read_bytes())
+            postinstall.chmod(0o755)
+            preinstall = scripts / "preinstall"
+            expected_preinstall = CODE / "installer/preinstall"
+            preinstall.write_text(expected_preinstall.read_text()
+                                  .replace("__ADBLOCKER_BUNDLE_ID__", "org.local.adblocker")
+                                  .replace("__ADBLOCKER_MARKETING_VERSION__", "0.0.2")
+                                  .replace("__ADBLOCKER_BUNDLE_BUILD__", "5"))
+            preinstall.chmod(0o755)
+
             def validate():
-                return subprocess.run(["python3", "-c", validator, str(root), str(expected)],
+                return subprocess.run(["python3", "-c", validator, str(root), str(expected_preinstall), str(expected_postinstall), "org.local.adblocker", "0.0.2", "5"],
                                       capture_output=True).returncode
             self.assertEqual(validate(), 0)
-            actual.write_text("#!/bin/bash\nexit 0\n")
+            postinstall.write_text("#!/bin/bash\nexit 0\n")
             self.assertNotEqual(validate(), 0)
-            actual.write_bytes(expected.read_bytes())
-            extra = scripts / "preinstall"
+            postinstall.write_bytes(expected_postinstall.read_bytes())
+            extra = scripts / "unexpected"
             extra.write_text("unexpected")
             self.assertNotEqual(validate(), 0)
             extra.unlink()
-            actual.chmod(0o644)
+            postinstall.chmod(0o644)
             self.assertNotEqual(validate(), 0)
-            actual.unlink()
-            actual.symlink_to(expected)
+            postinstall.unlink()
+            postinstall.symlink_to(expected_postinstall)
+            self.assertNotEqual(validate(), 0)
+            postinstall.unlink()
+            postinstall.write_bytes(expected_postinstall.read_bytes())
+            postinstall.chmod(0o755)
+            preinstall.write_bytes(expected_preinstall.read_bytes())
             self.assertNotEqual(validate(), 0)
 
 

@@ -8,7 +8,7 @@
     "binarySHA256": "261c737bcf8392d6ebf427ae078f1cd29b7d2a9011a1ad502477170efad1bd59"
   },
   "inputs": {
-    "combinedSHA256": "98ca287c2031678aeff33cb386b416abcc5ceae3ae9109837a8541cd1dfe7161",
+    "combinedSHA256": "1c5745fe3aef509ddeb724be4c303292f2fa6a1e4f9ec59a080c6879bfef6c63",
     "sources": [
       {
         "name": "AdGuard Base filter",
@@ -26,27 +26,27 @@
       },
       {
         "name": "Ad Blocker local supplementary rules",
-        "sha256": "debbfc47347a2e97279a330f04a37619796562aa3a232f6157680110d03d48ff"
+        "sha256": "757a320fdc3d49a5f12e5c0fee0c90b3aadf4770fbe1a2f0cad5ebade9f232ee"
       }
     ]
   },
   "safariVersion": 26,
   "conversion": {
-    "sourceRulesCount": 138527,
-    "sourceSafariCompatibleRulesCount": 128439,
-    "safariRulesCount": 97503,
-    "advancedRulesCount": 12076,
+    "sourceRulesCount": 138529,
+    "sourceSafariCompatibleRulesCount": 128440,
+    "safariRulesCount": 97504,
+    "advancedRulesCount": 12077,
     "discardedSafariRules": 0,
     "errorsCount": 223,
-    "safariRulesJSONBytes": 13982865,
-    "advancedRulesTextBytes": 1455806
+    "safariRulesJSONBytes": 13983002,
+    "advancedRulesTextBytes": 1455874
   },
-  "projectSentinelRules": 2,
-  "finalSafariRules": 97505,
+  "projectSentinelRules": 3,
+  "finalSafariRules": 97507,
   "outputs": {
-    "blockerListSHA256": "508b0900171a9eb4a0e6b4367d33d4566851a6cdeea16fdb46cac00c020961a8",
-    "ruleMultisetSHA256": "a6b592c6686ffd3d1e8c1f1147189b0fc3217c18b4e0c5921fa9a6077de34d79",
-    "advancedRulesSHA256": "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c",
+    "blockerListSHA256": "f283d774055c4a64d60ca8c5e2796b7805bdcaa15be837d0cd75e0d3d3c2e5c1",
+    "ruleMultisetSHA256": "ec6869474fa0b6386228759d95d28774faf6e1e54f97d353c5790fcad4f800a3",
+    "advancedRulesSHA256": "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02",
     "unsupportedRulesSHA256": "e2779ac23f63bb52bcc04360fd97726eedf420d17d38e916275490ec0ca1e754"
   },
   "verification": {
@@ -54,8 +54,8 @@
     "errorLogCountCheck": "passed",
     "webKitCompilation": {
       "status": "passed",
-      "testedOutputSHA256": "508b0900171a9eb4a0e6b4367d33d4566851a6cdeea16fdb46cac00c020961a8",
-      "testedOn": "2026-09-10",
+      "testedOutputSHA256": "f283d774055c4a64d60ca8c5e2796b7805bdcaa15be837d0cd75e0d3d3c2e5c1",
+      "testedOn": "2026-09-11",
       "macOS": "27.0 (26A5425a)"
     }
   }

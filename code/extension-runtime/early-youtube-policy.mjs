@@ -1,6 +1,6 @@
 // Deliberately narrow: only the four reviewed, unconditional player-data rules.
 // Review exceptions again when updating the filter generation.
-export const reviewedGeneration = "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c";
+export const reviewedGeneration = "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02";
 export const earlyYoutubeProperties = [
   "ytInitialPlayerResponse.adPlacements",
   "ytInitialPlayerResponse.adSlots",

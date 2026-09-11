@@ -8,7 +8,7 @@ if (globalThis[CONTENT_RUNTIME_GUARD]?.initialized === true
 }
 globalThis[CONTENT_RUNTIME_GUARD] = { initialized: true, version: "0.0.2" };
 
-const ADVANCED_GENERATION = "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c";
+const ADVANCED_GENERATION = "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02";
 // Capture this document's runtime before a later extension update can replace it.
 const RUNTIME_REVISION = globalThis.AdBlockerAdvancedRuntime?.revision;
 let advancedState = { phase: "starting" };
@@ -94,7 +94,35 @@ function publishFixtureState() {
   else document.addEventListener("DOMContentLoaded", markFixture, { once: true });
 }
 
+function selfTestSession() {
+  if (location.hostname !== "127.0.0.1") return null;
+  const match = location.pathname.match(/^\/session\/([0-9a-f]{64})\/$/);
+  return match?.[1] ?? null;
+}
+
+async function publishSelfTestState() {
+  const nonce = selfTestSession();
+  if (!nonce) return;
+  try {
+    const reply = await browser.runtime.sendMessage({
+      type: "adblocker:selftest",
+      nonce,
+      evidence: {
+        generation: ADVANCED_GENERATION,
+        runtimeRevision: RUNTIME_REVISION ?? "",
+        advancedPhase: advancedState.phase,
+        advancedError: advancedState.error ?? "",
+      },
+    });
+    if (reply?.accepted === true && document.documentElement) {
+      document.documentElement.dataset.adBlockerSelfTestExtension = "reported";
+    }
+  } catch {
+    // The host's bounded timeout owns failure reporting.
+  }
+}
+
 // The production web is not mutated by this diagnostic layer.
 publishFixtureState();
-void startAdvancedRules();
+void startAdvancedRules().finally(publishSelfTestState);
 })();

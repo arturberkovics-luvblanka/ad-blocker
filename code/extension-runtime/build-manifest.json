@@ -1,22 +1,22 @@
 {
   "schemaVersion": 2,
-  "generation": "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c",
-  "runtimeRevision": "ec3c38a24d5002f26c045e63f341e82a9eb7ff844912517cdf947e9e81e8ed25",
+  "generation": "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02",
+  "runtimeRevision": "660fc08c71affaaa6ff789001f018ce3c406b3de8c45aa00feffb3127f77e743",
   "inputs": {
     "generator": "6f41624ae27697f00dcb1e618644145760761a53871b2b4f987024125b00b0ce",
     "contentEntry": "d10747f6c870e0ea55fd743fc3f6763ace2f5aaf90a463f9df64fe6c8a8c5cb3",
-    "frontendSource": "754f3db653bbadc3bbc155b350c9c36d1d99cd9a51f169f5659d9f9362d8c0c5",
+    "frontendSource": "eec5f864a4ae58542eb5106b134328247cb35111d729012cb1b252d18bf75f38",
     "documentBackground": "ee7b1bc2d47cd9cacbd6a9569a82a18b999b3c947385056b19dff068ed64cf04",
-    "earlyYoutubePolicy": "18228956443ad12a710b8541345d713c781a869520e993d82fdeb1723f714a9d",
+    "earlyYoutubePolicy": "7b122e89d257d3e02865fe335512a8bad3755745e7e1b965dae22562d2a08c4b",
     "upstreamSource": "d9ce395d9a22607e67400a39dd871307721adadcfe16ff9792481ce8b8c35a5a",
     "upstreamPackage": "13766d0dd909d8d03146b58f0f2ec138718964ced0577619dec471d11e890f2b",
     "upstreamTsconfig": "51feeb695c4100c247eb98f5267e9cca0295ed624599d62d8af1bb8a6f4163c9",
     "upstreamLock": "e34db8eb45bdfbc0d908ffd319c3caef58d5e1ef3e90ad6c301967a9b2a14dbb",
-    "advancedRules": "fc68ee1ce9fa6a7eabd48a644785d45c87afb403931e9b6dcb1efadb292a873c"
+    "advancedRules": "6e45fc354371732ec243cb4b5b205b31a9fc8d219e1970bf021047c1f57b9b02"
   },
   "outputs": {
-    "advanced-content-runtime.js": "1bbed1a8b39a96d992ff060b22c2a788168b3615e81d01355c57842c2067a4b9",
-    "advanced-background-runtime.js": "bec6db127a5068c708087c041db30f277d965456540a080bbe19fee011af15ba",
-    "early-youtube.js": "92c22f95ffbaaae43acb770df8b56a0b81ddb26b99fb0750fb5a9f24b3a6e71e"
+    "advanced-content-runtime.js": "6ca8d1ae22dc1b988487cc9d8d24ded694af4d32d4f63b0bbb518177b67282bb",
+    "advanced-background-runtime.js": "2d2b22e45695a15ccf0de135eec6c7d8cc6deacc4dc48e7e9a93c4ac4b1621ec",
+    "early-youtube.js": "6d90cb55d3783c6c3ea53cdaef4eb2b2792aee5c78f30e76ae8b0e47dd55bf83"
   }
 }

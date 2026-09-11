@@ -8,3 +8,6 @@
 /^https?:\/\/35\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\//$popup,third-party
 /^https?:\/\/104\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\//$popup,third-party
 /^https?:\/\/146\.59\.211\.[0-9][0-9]?[0-9]?.*/$popup,third-party
+! Embedded localhost self-test. These paths exist only while the host app runs an explicit test.
+127.0.0.1##.adblocker-self-test-native
+127.0.0.1#?#.adblocker-self-test-advanced:has-text(advanced-marker)

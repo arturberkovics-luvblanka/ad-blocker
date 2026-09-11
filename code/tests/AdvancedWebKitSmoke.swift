@@ -19,7 +19,10 @@ final class AdvancedSmoke: NSObject, WKNavigationDelegate {
         let script = runtime + """
         document.documentElement.dataset.runtimeRevision = AdBlockerAdvancedRuntime.revision;
         new AdBlockerAdvancedRuntime.ContentScript().applyConfiguration({
-          css: ['.plain-ad'], extendedCss: ['.advanced-ad:contains(Sponsored)'], js: [],
+          css: ['.plain-ad'], extendedCss: [
+            '.advanced-ad:contains(Sponsored)',
+            '.adblocker-self-test-advanced:has-text(advanced-marker)'
+          ], js: [],
           scriptlets: [
             {name: 'set-constant', args: ['google_ad_status', '1']},
             {name: 'json-prune', args: ['playerResponse.adPlacements playerResponse.adSlots', 'playerResponse.streamingData.serverAbrStreamingUrl']},
@@ -38,6 +41,7 @@ final class AdvancedSmoke: NSObject, WKNavigationDelegate {
         <!doctype html><html><head>\(csp)</head><body>
         <div class="plain-ad">Advertisement</div>
         <div class="advanced-ad">Sponsored</div>
+        <div class="adblocker-self-test-advanced">advanced-marker</div>
         <div id="content">Useful content</div>
         </body></html>
         """, baseURL: URL(string: "https://www.youtube.com/"))
@@ -58,6 +62,7 @@ final class AdvancedSmoke: NSObject, WKNavigationDelegate {
             contentPreserved: parsed.playerResponse.videoDetails.videoId === 'test' && parsed.playerResponse.streamingData.serverAbrStreamingUrl === 'https://example.invalid/media',
             cssHidden: getComputedStyle(document.querySelector('.plain-ad')).display === 'none',
             extendedHidden: getComputedStyle(document.querySelector('.advanced-ad')).display === 'none',
+            selfTestAdvancedHidden: getComputedStyle(document.querySelector('.adblocker-self-test-advanced')).display === 'none',
             usefulVisible: getComputedStyle(document.getElementById('content')).display !== 'none'
           });
         })()
@@ -70,7 +75,8 @@ final class AdvancedSmoke: NSObject, WKNavigationDelegate {
             guard result["contentPreserved"] == true, result["cssHidden"] == true,
                   result["runtimeRevision"] == true,
                   result["daiInitialized"] == !self.strictCSP,
-                  result["extendedHidden"] == true, result["usefulVisible"] == true,
+                  result["extendedHidden"] == true, result["selfTestAdvancedHidden"] == true,
+                  result["usefulVisible"] == true,
                   result["constant"] == !self.strictCSP, result["adsPruned"] == !self.strictCSP else {
                 self.fail("Unexpected strictCSP=\(self.strictCSP): \(text)"); return
             }
